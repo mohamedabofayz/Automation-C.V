@@ -497,11 +497,7 @@
                     </div>
                     <div class="form-group">
                         <label for="jobTitle">المسمى الوظيفي المطلوب *</label>
-                        <div class="input-with-ai">
-                            <input type="text" id="jobTitle" required placeholder="مطور ويب Full Stack">
-                            <!-- توليد مسمى وظيفي باستخدام الذكاء الاصطناعي مع سياق الخبرة -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('jobTitle')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="text" id="jobTitle" required placeholder="مطور ويب Full Stack">
                     </div>
                     <div class="form-group">
                         <label for="summary">الملخص المهني *</label>
@@ -524,37 +520,21 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>المسمى الوظيفي</label>
-                                    <div class="input-with-ai">
-                                        <input type="text" name="expTitle" placeholder="مطور ويب أول">
-                                        <!-- توليد مسمى وظيفي لخبرة عملية -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="text" name="expTitle" placeholder="مطور ويب أول">
                                 </div>
                                 <div class="form-group">
                                     <label>اسم الشركة</label>
-                                    <div class="input-with-ai">
-                                        <input type="text" name="expCompany" placeholder="شركة التقنية المتقدمة">
-                                        <!-- توليد اسم شركة -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="text" name="expCompany" placeholder="شركة التقنية المتقدمة">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>تاريخ البداية</label>
-                                    <div class="input-with-ai">
-                                        <input type="month" name="expStart">
-                                        <!-- توليد تاريخ بدء -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="month" name="expStart">
                                 </div>
                                 <div class="form-group">
                                     <label>تاريخ النهاية</label>
-                                    <div class="input-with-ai">
-                                        <input type="month" name="expEnd">
-                                        <!-- توليد تاريخ نهاية -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="month" name="expEnd">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -764,9 +744,6 @@
                     // لرقم الهاتف، نحافظ على التنسيق
                     const phoneMatch = generatedText.match(/[\d+\s()-]+/);
                     generatedText = phoneMatch ? phoneMatch[0] : generatedText;
-                } else if (fieldType === 'jobTitle' || fieldType === 'experience-title') {
-                    // للمسمى الوظيفي، تأكد من أنه مختصر واحترافي
-                    generatedText = generatedText.split('\n')[0].replace(/^[.:،\s]+|[.:،\s]+$/g, '');
                 }
                 
                 // ملء الحقل بالنص المولد
@@ -872,18 +849,8 @@
             }
             
             // إضافة سياق خاص حسب نوع الحقل
-            if (fieldType === 'jobTitle') {
-                context.push('يرجى توليد مسمى وظيفي احترافي وحديث يناسب سوق العمل الحالي مع التركيز على الوظائف الأكثر طلباً');
-            } else if (fieldType === 'summary') {
+            if (fieldType === 'summary') {
                 context.push('يرجى توليد ملخص مهني احترافي وجذاب في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس');
-            } else if (fieldType === 'experience-title') {
-                context.push('يرجى توليد مسمى وظيفي مناسب لخبرة عملية في مجال التكنولوجيا مع مراعاة المسميات الشائعة في السوق');
-            } else if (fieldType === 'experience-company') {
-                context.push('يرجى توليد اسم لشركة تقنية احترافية مع مراعاة الشركات الرائدة في المنطقة');
-            } else if (fieldType === 'experience-start') {
-                context.push('يرجى توليد تاريخ بداية واقعي لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية');
-            } else if (fieldType === 'experience-end') {
-                context.push('يرجى توليد تاريخ نهاية واقعي لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية');
             } else if (fieldType === 'experience-description') {
                 context.push('يرجى توليد وصف احترافي للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة');
             } else if (field.id === 'technicalSkills' || field.id === 'softSkills') {
@@ -896,7 +863,7 @@
         // تنسيق النص المهني بشكل مناسب
         function formatProfessionalText(text, fieldType) {
             // إزالة العبارات غير الاحترافية
-            text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم|المهندس|السيد|السيدة|الدكتور|المهندسة/g, '');
+            text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم|المهندس|السيدة|الدكتور|المهندسة/g, '');
             
             // معالجة خاصة للملخص المهني
             if (fieldType === 'summary') {
@@ -993,12 +960,7 @@
         // تحديد مطالبة التوليد بناءً على نوع الحقل
         function getFieldPrompt(fieldType) {
             const prompts = {
-                'jobTitle': 'اكتب مسمى وظيفياً احترافياً جذاباً وحديثاً يناسب سوق العمل الحالي مع التركيز على الوظائف الأكثر طلباً في مجال التكنولوجيا',
-                'summary': 'اكتب ملخصاً مهنياً تسويقياً وجذاباً في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس والقيمة المضافة التي تقدمها. يجب أن يكون النص احترافياً ومقنعاً ويبرز نقاط القوة الفريدة.',
-                'experience-title': 'اكتب مسمى وظيفياً مناسباً لخبرة عملية في مجال التكنولوجيا مع مراعاة المسميات الشائعة في السوق',
-                'experience-company': 'اكتب اسماً لشركة تقنية احترافية مع مراعاة الشركات الرائدة في المنطقة',
-                'experience-start': 'اكتب تاريخ بداية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
-                'experience-end': 'اكتب تاريخ نهاية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
+                'summary': 'اكتب ملخصاً مهنياً تسويقياً وجذاباً في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس والقيمة المضافة التي تقدمها. يجب أن يكون النص احترافياً ومقنعاً ويبرز نقاط القوة الفريدة. استخدم المعلومات من المسمى الوظيفي: ${document.getElementById("jobTitle").value}',
                 'experience-description': 'اكتب وصفاً احترافياً للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة. استخدم لغة تسويقية واحترافية تبرز القيمة المضافة التي قدمتها.',
                 'technicalSkills': 'اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم.',
                 'softSkills': 'اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم.'
@@ -1018,37 +980,21 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>المسمى الوظيفي</label>
-                        <div class="input-with-ai">
-                            <input type="text" name="expTitle" placeholder="مطور ويب">
-                            <!-- توليد مسمى وظيفي لخبرة عملية -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="text" name="expTitle" placeholder="مطور ويب">
                     </div>
                     <div class="form-group">
                         <label>اسم الشركة</label>
-                        <div class="input-with-ai">
-                            <input type="text" name="expCompany" placeholder="اسم الشركة">
-                            <!-- توليد اسم شركة -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="text" name="expCompany" placeholder="اسم الشركة">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>تاريخ البداية</label>
-                        <div class="input-with-ai">
-                            <input type="month" name="expStart">
-                            <!-- توليد تاريخ بدء -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="month" name="expStart">
                     </div>
                     <div class="form-group">
                         <label>تاريخ النهاية</label>
-                        <div class="input-with-ai">
-                            <input type="month" name="expEnd">
-                            <!-- توليد تاريخ نهاية -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="month" name="expEnd">
                     </div>
                 </div>
                 <div class="form-group">
@@ -1149,6 +1095,11 @@
             // إنشاء HTML للسيرة الذاتية
             let cvHTML = `
                 <div class="cv-header">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid #667eea;">
+                            <img src="${document.getElementById('profilePhoto').src}" style="width: 100%; height: 100%; object-fit: cover;" alt="الصورة الشخصية">
+                        </div>
+                    </div>
                     <h2>${firstName} ${lastName}</h2>
                     <div class="job-title">${jobTitle}</div>
                     <div class="cv-contact">
@@ -1284,6 +1235,19 @@
                             padding-bottom: 5px;
                             margin-bottom: 15px;
                         }
+                        .profile-photo {
+                            width: 120px;
+                            height: 120px;
+                            border-radius: 50%;
+                            overflow: hidden;
+                            border: 2px solid #667eea;
+                            margin: 0 auto 15px;
+                        }
+                        .profile-photo img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
                         @page { size: A4; margin: 2cm; }
                         @media print {
                             body { padding: 0; }
@@ -1318,6 +1282,11 @@
             data.softSkills = document.getElementById('softSkills').value;
             
             localStorage.setItem('cvBuilderData', JSON.stringify(data));
+            
+            // حفظ الصورة الشخصية
+            const profilePhoto = document.getElementById('profilePhoto').src;
+            localStorage.setItem('profilePhoto', profilePhoto);
+            
             alert('تم حفظ المسودة بنجاح!');
         }
         
@@ -1338,6 +1307,12 @@
                     element.value = data[key];
                 }
             });
+            
+            // استعادة الصورة الشخصية
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                document.getElementById('profilePhoto').src = savedPhoto;
+            }
             
             updateProgress();
             alert('تم استعادة المسودة بنجاح!');
