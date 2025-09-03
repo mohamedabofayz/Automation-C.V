@@ -696,87 +696,63 @@
             element.disabled = true;
             
             try {
-                // ملاحظة: Pollinations.ai يدعم توليد الصور فقط، وليس النصوص
-                // في تطبيق واقعي، ستحتاج إلى استخدام واجهة برمجة تطبيقات لتوليد النصوص مثل OpenAI أو Cohere
+                // استخدام Pollinations.ai API لتوليد النصوص
+                const API_TOKEN = 'twuw5P7YvER0qpSD'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
+                const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
                 
-                // هذا نموذج افتراضي لتوليد النصوص
-                let generatedText = "";
+                const payload = { 
+                    messages: [{ 
+                        role: "user", 
+                        content: prompt 
+                    }],
+                    max_tokens: 200,
+                    temperature: 0.7
+                };
                 
-                switch(fieldType || element) {
-                    case 'firstName':
-                        generatedText = "أحمد";
-                        break;
-                    case 'lastName':
-                        generatedText = "محمد";
-                        break;
-                    case 'email':
-                        generatedText = "ahmed.mohammed@gmail.com";
-                        break;
-                    case 'phone':
-                        generatedText = "+966 50 123 4567";
-                        break;
-                    case 'location':
-                        generatedText = "الرياض، السعودية";
-                        break;
-                    case 'linkedin':
-                        generatedText = "https://linkedin.com/in/ahmed-mohammed";
-                        break;
-                    case 'jobTitle':
-                        generatedText = "مطور ويب Full Stack";
-                        break;
-                    case 'summary':
-                        generatedText = "محترف في تطوير الويب مع خبرة تزيد عن 5 سنوات في بناء تطبيقات الويب الديناميكية باستخدام أحدث التقنيات. أمتلك مهارات قوية في تحليل المتطلبات وتحويلها إلى حلول تقنية فعالة. أتمتع بقدرة عالية على العمل ضمن فريق وقيادة المشاريع من المرحلة الأولية حتى التسليم.";
-                        break;
-                    case 'experience-title':
-                        generatedText = "مطور ويب أول";
-                        break;
-                    case 'experience-company':
-                        generatedText = "شركة التقنية المتقدمة";
-                        break;
-                    case 'experience-start':
-                        generatedText = "2020-01";
-                        break;
-                    case 'experience-end':
-                        generatedText = "2023-12";
-                        break;
-                    case 'experience-description':
-                        generatedText = "• طوّرت 3 تطبيقات ويب خدمت أكثر من 10,000 مستخدم\n• حسّنت الأداء بنسبة 40% من خلال تحسين الكود\n• قدت فريق من 4 مطورين في مشروع إعادة التصميم";
-                        break;
-                    case 'education-degree':
-                        generatedText = "بكالوريوس";
-                        break;
-                    case 'education-field':
-                        generatedText = "علوم الحاسب";
-                        break;
-                    case 'education-institution':
-                        generatedText = "جامعة الملك سعود";
-                        break;
-                    case 'education-year':
-                        generatedText = "2020";
-                        break;
-                    case 'education-gpa':
-                        generatedText = "3.8 من 4.0";
-                        break;
-                    case 'technicalSkills':
-                        generatedText = "JavaScript, React, Node.js, Python, SQL, Git, Docker, TypeScript, MongoDB, Express";
-                        break;
-                    case 'softSkills':
-                        generatedText = "إدارة الفرق, التواصل الفعال, حل المشكلات, العمل تحت الضغط, التفكير النقدي, القيادة";
-                        break;
-                    default:
-                        generatedText = "تم توليد هذا النص باستخدام الذكاء الاصطناعي";
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`فشل في الاتصال بخدمة الذكاء الاصطناعي: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                let generatedText = data.choices[0].message.content.trim();
+                
+                // معالجة خاصة للحقول المختلفة
+                if (field.tagName === 'INPUT' && field.type === 'email') {
+                    // للبريد الإلكتروني، نستخرج أول بريد إلكتروني في النص
+                    const emailMatch = generatedText.match(/[\w.-]+@[\w.-]+\.\w+/);
+                    generatedText = emailMatch ? emailMatch[0] : generatedText;
+                } else if (field.tagName === 'INPUT' && field.type === 'tel') {
+                    // لرقم الهاتف، نحافظ على التنسيق
+                    const phoneMatch = generatedText.match(/[\d+\s()-]+/);
+                    generatedText = phoneMatch ? phoneMatch[0] : generatedText;
                 }
                 
                 // ملء الحقل بالنص المولد
                 if (field.tagName === 'SELECT') {
                     // للحقول المختارة (select)
                     const options = field.options;
+                    let foundMatch = false;
+                    
                     for (let i = 0; i < options.length; i++) {
                         if (options[i].value.toLowerCase().includes(generatedText.toLowerCase()) || 
                             options[i].textContent.toLowerCase().includes(generatedText.toLowerCase())) {
                             field.selectedIndex = i;
+                            foundMatch = true;
                             break;
                         }
+                    }
+                    
+                    // إذا لم يتم العثور على تطابق، نستخدم أول خيار
+                    if (!foundMatch && options.length > 0) {
+                        field.selectedIndex = 0;
                     }
                 } else {
                     // للحقول النصية (input و textarea)
@@ -788,7 +764,7 @@
                 
             } catch (error) {
                 console.error('Error generating text:', error);
-                alert('حدث خطأ أثناء توليد النص. يرجى المحاولة مرة أخرى.');
+                alert('حدث خطأ أثناء توليد النص: ' + error.message);
             } finally {
                 // إعادة النص الأصلي للزر
                 element.textContent = originalText;
@@ -1197,3 +1173,4 @@
     </script>
 </body>
 </html>
+```
