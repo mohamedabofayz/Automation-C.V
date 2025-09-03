@@ -440,7 +440,7 @@
             <div class="profile-photo-section">
                 <h3>الصورة الشخصية</h3>
                 <div class="profile-photo-container">
-                    <img id="profilePhoto" class="profile-photo" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
+                    <img id="profilePhoto" class="profile-photo" src="image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
                 </div>
                 <div class="photo-actions">
                     <input type="file" id="photoUpload" accept="image/*" style="display: none;">
@@ -674,18 +674,17 @@
         
         // توليد نص تلقائي باستخدام الذكاء الاصطناعي
         async function generateTextForField(element, fieldType) {
-            let field, prompt;
+            let field, actualFieldType;
             
             // تحديد الحقل المطلوب
             if (typeof element === 'string') {
                 // الحقول الثابتة
                 field = document.getElementById(element);
-                fieldType = element; // تأكد من تعيين fieldType الصحيح
-                prompt = getFieldPrompt(fieldType);
+                actualFieldType = element;
             } else {
                 // الحقول الديناميكية (الخبرة والتعليم)
                 field = element.parentElement.querySelector('input, textarea, select');
-                prompt = getFieldPrompt(fieldType);
+                actualFieldType = fieldType;
             }
             
             if (!field) return;
@@ -700,11 +699,11 @@
             
             try {
                 // استخدام Pollinations.ai API لتوليد النصوص
-                const API_TOKEN = 'twuw5P7YvER0qpSD'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
+                const API_TOKEN = 'demo'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
                 const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
                 
                 // جمع السياق من الحقول الأخرى
-                const context = gatherContextForField(field, fieldType);
+                const context = gatherContextForField(field, actualFieldType);
                 
                 // تعديل المطالبة بناءً على السياق
                 const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
@@ -743,9 +742,9 @@
                 let generatedText = data.choices[0].message.content.trim();
                 
                 // معالجة خاصة للحقول المختلفة
-                if (fieldType === 'experience-description' || fieldType === 'summary') {
+                if (actualFieldType === 'experience-description' || actualFieldType === 'summary') {
                     // للوصف والملخص، تأكد من أن النص مناسب
-                    generatedText = formatProfessionalText(generatedText, fieldType);
+                    generatedText = formatProfessionalText(generatedText, actualFieldType);
                 } else if (field.tagName === 'INPUT' && field.type === 'email') {
                     // للبريد الإلكتروني، نستخرج أول بريد إلكتروني في النص
                     const emailMatch = generatedText.match(/[\w.-]+@[\w.-]+\.\w+/);
@@ -858,6 +857,15 @@
                 context.push(`المهارات المهنية: ${softSkills}`);
             }
             
+            // إضافة سياق خاص حسب نوع الحقل
+            if (fieldType === 'summary') {
+                context.push('يرجى توليد ملخص مهني احترافي وجذاب في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس');
+            } else if (fieldType === 'experience-description') {
+                context.push('يرجى توليد وصف احترافي للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة');
+            } else if (fieldType === 'technicalSkills' || fieldType === 'softSkills') {
+                context.push('يرجى توليد مهارات مناسبة للمسمى الوظيفي المطلوب مع التركيز على المهارات الأكثر طلباً في السوق مع مراعاة الخبرة العملية والتعليم');
+            }
+            
             return context.length > 0 ? context.join('\n') : '';
         }
         
@@ -929,7 +937,7 @@
             const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
             
             // إظهار مؤشر التحميل
-            profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
+            profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
             
             try {
                 // استخدام خدمة توليد الصور
@@ -947,13 +955,13 @@
                 
                 img.onerror = function() {
                     // في حالة الخطأ، استخدم صورة افتراضية
-                    profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
+                    profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
                     alert('فشل في توليد الصورة. يرجى المحاولة مرة أخرى.');
                 };
                 
             } catch (error) {
                 console.error('Error generating profile photo:', error);
-                profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
+                profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
                 alert('حدث خطأ أثناء توليد الصورة: ' + error.message);
             }
         }
