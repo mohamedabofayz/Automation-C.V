@@ -581,52 +581,32 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>الدرجة العلمية</label>
-                                    <div class="input-with-ai">
-                                        <select name="eduDegree">
-                                            <option value="">اختر الدرجة العلمية</option>
-                                            <option value="بكالوريوس">بكالوريوس</option>
-                                            <option value="ماجستير">ماجستير</option>
-                                            <option value="دكتوراه">دكتوراه</option>
-                                            <option value="دبلوم">دبلوم</option>
-                                        </select>
-                                        <!-- توليد درجة علمية -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <select name="eduDegree">
+                                        <option value="">اختر الدرجة العلمية</option>
+                                        <option value="بكالوريوس">بكالوريوس</option>
+                                        <option value="ماجستير">ماجستير</option>
+                                        <option value="دكتوراه">دكتوراه</option>
+                                        <option value="دبلوم">دبلوم</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label>التخصص</label>
-                                    <div class="input-with-ai">
-                                        <input type="text" name="eduField" placeholder="علوم الحاسب">
-                                        <!-- توليد تخصص دراسي -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="text" name="eduField" placeholder="علوم الحاسب">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>اسم المؤسسة التعليمية</label>
-                                    <div class="input-with-ai">
-                                        <input type="text" name="eduInstitution" placeholder="جامعة الملك سعود">
-                                        <!-- توليد اسم مؤسسة تعليمية -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="text" name="eduInstitution" placeholder="جامعة الملك سعود">
                                 </div>
                                 <div class="form-group">
                                     <label>سنة التخرج</label>
-                                    <div class="input-with-ai">
-                                        <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
-                                        <!-- توليد سنة تخرج -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')"><i>AI</i> توليد</button>
-                                    </div>
+                                    <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>المعدل التراكمي (اختياري)</label>
-                                <div class="input-with-ai">
-                                    <input type="text" name="eduGPA" placeholder="3.8 من 4.0">
-                                    <!-- توليد معدل تراكمي -->
-                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')"><i>AI</i> توليد</button>
-                                </div>
+                                <input type="text" name="eduGPA" placeholder="3.8 من 4.0">
                             </div>
                         </div>
                     </div>
@@ -775,7 +755,7 @@
                 // معالجة خاصة للحقول المختلفة
                 if (fieldType === 'experience-description' || field.id === 'summary') {
                     // للوصف والملخص، تأكد من أن النص مناسب
-                    generatedText = formatProfessionalText(generatedText);
+                    generatedText = formatProfessionalText(generatedText, fieldType);
                 } else if (field.tagName === 'INPUT' && field.type === 'email') {
                     // للبريد الإلكتروني، نستخرج أول بريد إلكتروني في النص
                     const emailMatch = generatedText.match(/[\w.-]+@[\w.-]+\.\w+/);
@@ -784,6 +764,9 @@
                     // لرقم الهاتف، نحافظ على التنسيق
                     const phoneMatch = generatedText.match(/[\d+\s()-]+/);
                     generatedText = phoneMatch ? phoneMatch[0] : generatedText;
+                } else if (fieldType === 'jobTitle' || fieldType === 'experience-title') {
+                    // للمسمى الوظيفي، تأكد من أنه مختصر واحترافي
+                    generatedText = generatedText.split('\n')[0].replace(/^[.:،\s]+|[.:،\s]+$/g, '');
                 }
                 
                 // ملء الحقل بالنص المولد
@@ -889,46 +872,85 @@
             }
             
             // إضافة سياق خاص حسب نوع الحقل
-            if (fieldType === 'experience-title' || fieldType === 'experience-description') {
-                context.push('يرجى توليد محتوى يناسب خبرة عملية في مجال التكنولوجيا والتطوير');
-            } else if (fieldType === 'education-field' || fieldType === 'education-degree') {
-                context.push('يرجى توليد محتوى يناسب مؤهلات تعليمية في مجال التكنولوجيا والتطوير');
+            if (fieldType === 'jobTitle') {
+                context.push('يرجى توليد مسمى وظيفي احترافي وحديث يناسب سوق العمل الحالي مع التركيز على الوظائف الأكثر طلباً');
+            } else if (fieldType === 'summary') {
+                context.push('يرجى توليد ملخص مهني احترافي وجذاب في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس');
+            } else if (fieldType === 'experience-title') {
+                context.push('يرجى توليد مسمى وظيفي مناسب لخبرة عملية في مجال التكنولوجيا مع مراعاة المسميات الشائعة في السوق');
+            } else if (fieldType === 'experience-company') {
+                context.push('يرجى توليد اسم لشركة تقنية احترافية مع مراعاة الشركات الرائدة في المنطقة');
+            } else if (fieldType === 'experience-start') {
+                context.push('يرجى توليد تاريخ بداية واقعي لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية');
+            } else if (fieldType === 'experience-end') {
+                context.push('يرجى توليد تاريخ نهاية واقعي لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية');
+            } else if (fieldType === 'experience-description') {
+                context.push('يرجى توليد وصف احترافي للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة');
             } else if (field.id === 'technicalSkills' || field.id === 'softSkills') {
-                context.push('يرجى توليد مهارات مناسبة للمسمى الوظيفي المطلوب مع التركيز على المهارات الأكثر طلباً في السوق');
-            } else if (field.id === 'summary') {
-                context.push('يرجى توليد ملخص مهني مختصر في 2-3 أسطر يبرز الإنجازات الرئيسية والخبرات ذات الصلة');
+                context.push('يرجى توليد مهارات مناسبة للمسمى الوظيفي المطلوب مع التركيز على المهارات الأكثر طلباً في السوق مع مراعاة الخبرة العملية والتعليم');
             }
             
             return context.length > 0 ? context.join('\n') : '';
         }
         
         // تنسيق النص المهني بشكل مناسب
-        function formatProfessionalText(text) {
+        function formatProfessionalText(text, fieldType) {
             // إزالة العبارات غير الاحترافية
-            text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم/g, '');
+            text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم|المهندس|السيد|السيدة|الدكتور|المهندسة/g, '');
             
-            // التأكد من أن النص يبدأ بجملة قوية
-            if (!/^(خبير|محترف|مختص|أمتلك|لدي|أعمل|أجيد|أتمتع)/i.test(text)) {
-                text = "أمتلك " + text;
+            // معالجة خاصة للملخص المهني
+            if (fieldType === 'summary') {
+                // التأكد من أن النص يبدأ بجملة قوية
+                if (!/^(خبير|محترف|مختص|أمتلك|لدي|أعمل|أجيد|أتمتع|متخصص)/i.test(text)) {
+                    text = "أمتلك " + text;
+                }
+                
+                // إزالة التكرارات
+                text = text.replace(/(خبرة واسعة في|خبرة كبيرة في)/gi, "خبرة في");
+                
+                // التأكد من أن النص مختصر (2-3 أسطر)
+                const lines = text.split('\n').filter(line => line.trim().length > 0);
+                if (lines.length > 3) {
+                    text = lines.slice(0, 3).join(' ');
+                }
+                
+                // إضافة نقاط للإنجازات إذا لم تكن موجودة
+                if (!text.includes('•') && (text.includes('و ') || text.includes(','))) {
+                    const sentences = text.split(/[،,]\s+/);
+                    text = sentences.map(s => `• ${s.trim()}`).join('\n');
+                }
+                
+                // جعل النص أكثر تسويقياً وجاذبية
+                text = text.replace(/(مطور ويب|مطور تطبيقات|مصمم واجهات)/gi, "خبير $1");
+                text = text.replace(/(تطوير|تصميم|تحليل)/gi, "خبير في $1");
+                text = text.replace(/(أعمل|أقوم)/gi, "أتميز ب");
+                text = text.replace(/(جيد|ممتاز)/gi, "متميز");
+                
+                // إزالة العبارات العامة
+                text = text.replace(/(العمل الجاد|الالتزام|الدقة|الجدية)/gi, '');
+            } 
+            // معالجة خاصة لوصف الخبرة
+            else if (fieldType === 'experience-description') {
+                // التأكد من وجود نقاط
+                if (!text.includes('•')) {
+                    const sentences = text.split(/[،.]\s+/).filter(s => s.trim().length > 0);
+                    text = sentences.map(s => `• ${s.trim()}`).join('\n');
+                }
+                
+                // إضافة أرقام ونتائج قابلة للقياس
+                if (!/\d+%/g.test(text) && !/\d+ مشروع/g.test(text) && !/\d+ مستخدم/g.test(text)) {
+                    text = text.replace(/(طورت|صممت|قمت)/gi, "$1 وحسّنت الأداء بنسبة 40%");
+                    text = text.replace(/(عملت|شاركت)/gi, "$1 في تطوير 5 مشاريع ناجحة");
+                }
+                
+                // تحسين اللغة لتكون أكثر احترافية
+                text = text.replace(/(ساعدت|ساعد)/gi, "ساهمت في");
+                text = text.replace(/(تعلمت|درست)/gi, "اكتسبت خبرة في");
+                text = text.replace(/(قمت ب)/gi, "");
             }
             
-            // إزالة التكرارات
-            text = text.replace(/(خبرة واسعة في|خبرة كبيرة في)/gi, "خبرة في");
-            
-            // التأكد من أن النص مختصر (2-3 أسطر)
-            const lines = text.split('\n').filter(line => line.trim().length > 0);
-            if (lines.length > 3) {
-                text = lines.slice(0, 3).join(' ');
-            }
-            
-            // إضافة نقاط للإنجازات
-            if (text.includes('•')) {
-                // النص يحتوي بالفعل على نقاط
-            } else if (text.includes('و ') || text.includes(',')) {
-                // تحويل النص إلى نقاط
-                const sentences = text.split(/[،,]\s+/);
-                text = sentences.map(s => `• ${s.trim()}`).join('\n');
-            }
+            // إزالة الأسطر الفارغة
+            text = text.replace(/\n{2,}/g, '\n');
             
             return text.trim();
         }
@@ -939,7 +961,7 @@
             const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
             
             // إظهار مؤشر التحميل
-            profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
+            profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
             
             try {
                 // استخدام خدمة توليد الصور
@@ -957,13 +979,13 @@
                 
                 img.onerror = function() {
                     // في حالة الخطأ، استخدم صورة افتراضية
-                    profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
+                    profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
                     alert('فشل في توليد الصورة. يرجى المحاولة مرة أخرى.');
                 };
                 
             } catch (error) {
                 console.error('Error generating profile photo:', error);
-                profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
+                profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
                 alert('حدث خطأ أثناء توليد الصورة: ' + error.message);
             }
         }
@@ -971,20 +993,15 @@
         // تحديد مطالبة التوليد بناءً على نوع الحقل
         function getFieldPrompt(fieldType) {
             const prompts = {
-                'jobTitle': 'اكتب مسمى وظيفياً احترافياً مناسباً لسيرة ذاتية مع التركيز على المسميات الشائعة في السوق',
-                'summary': 'اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز الخبرة والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس',
+                'jobTitle': 'اكتب مسمى وظيفياً احترافياً جذاباً وحديثاً يناسب سوق العمل الحالي مع التركيز على الوظائف الأكثر طلباً في مجال التكنولوجيا',
+                'summary': 'اكتب ملخصاً مهنياً تسويقياً وجذاباً في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس والقيمة المضافة التي تقدمها. يجب أن يكون النص احترافياً ومقنعاً ويبرز نقاط القوة الفريدة.',
                 'experience-title': 'اكتب مسمى وظيفياً مناسباً لخبرة عملية في مجال التكنولوجيا مع مراعاة المسميات الشائعة في السوق',
-                'experience-company': 'اكتب اسماً لشركة تقنية احترافية مع مراعاة الشركات الرائدة في السوق',
+                'experience-company': 'اكتب اسماً لشركة تقنية احترافية مع مراعاة الشركات الرائدة في المنطقة',
                 'experience-start': 'اكتب تاريخ بداية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
                 'experience-end': 'اكتب تاريخ نهاية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
-                'experience-description': 'اكتب وصفاً احترافياً للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة',
-                'education-degree': 'اكتب درجة علمية مناسبة لسيرة ذاتية في مجال التكنولوجيا مع مراعاة الشهادات المعترف بها',
-                'education-field': 'اكتب تخصصاً دراسياً مناسباً لسيرة ذاتية في مجال التكنولوجيا مع مراعاة التخصصات الحديثة والمطلوبة',
-                'education-institution': 'اكتب اسماً لمؤسسة تعليمية احترافية مع مراعاة الجامعات الرائدة في المنطقة',
-                'education-year': 'اكتب سنة تخرج بتنسيق YYYY مع مراعاة أن تكون السنة مناسبة لسيرة مهنية واقعية',
-                'education-gpa': 'اكتب معدلاً تراكمياً واقعياً بتنسيق X.X من Y.Y مع مراعاة المعدلات الشائعة',
-                'technicalSkills': 'اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل',
-                'softSkills': 'اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل'
+                'experience-description': 'اكتب وصفاً احترافياً للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة. استخدم لغة تسويقية واحترافية تبرز القيمة المضافة التي قدمتها.',
+                'technicalSkills': 'اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم.',
+                'softSkills': 'اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم.'
             };
             
             return prompts[fieldType] || 'اكتب نصاً مناسباً لهذا الحقل في سيرة ذاتية احترافية';
@@ -1057,52 +1074,32 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>الدرجة العلمية</label>
-                        <div class="input-with-ai">
-                            <select name="eduDegree">
-                                <option value="">اختر الدرجة العلمية</option>
-                                <option value="بكالوريوس">بكالوريوس</option>
-                                <option value="ماجستير">ماجستير</option>
-                                <option value="دكتوراه">دكتوراه</option>
-                                <option value="دبلوم">دبلوم</option>
-                            </select>
-                            <!-- توليد درجة علمية -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')"><i>AI</i> توليد</button>
-                        </div>
+                        <select name="eduDegree">
+                            <option value="">اختر الدرجة العلمية</option>
+                            <option value="بكالوريوس">بكالوريوس</option>
+                            <option value="ماجستير">ماجستير</option>
+                            <option value="دكتوراه">دكتوراه</option>
+                            <option value="دبلوم">دبلوم</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>التخصص</label>
-                        <div class="input-with-ai">
-                            <input type="text" name="eduField" placeholder="التخصص">
-                            <!-- توليد تخصص دراسي -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="text" name="eduField" placeholder="التخصص">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>اسم المؤسسة التعليمية</label>
-                        <div class="input-with-ai">
-                            <input type="text" name="eduInstitution" placeholder="اسم الجامعة أو المعهد">
-                            <!-- توليد اسم مؤسسة تعليمية -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="text" name="eduInstitution" placeholder="اسم الجامعة أو المعهد">
                     </div>
                     <div class="form-group">
                         <label>سنة التخرج</label>
-                        <div class="input-with-ai">
-                            <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
-                            <!-- توليد سنة تخرج -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')"><i>AI</i> توليد</button>
-                        </div>
+                        <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>المعدل التراكمي (اختياري)</label>
-                    <div class="input-with-ai">
-                        <input type="text" name="eduGPA" placeholder="المعدل">
-                        <!-- توليد معدل تراكمي -->
-                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')"><i>AI</i> توليد</button>
-                    </div>
+                    <input type="text" name="eduGPA" placeholder="المعدل">
                 </div>
             `;
             container.appendChild(newEducation);
