@@ -680,11 +680,11 @@
             if (typeof element === 'string') {
                 // الحقول الثابتة
                 field = document.getElementById(element);
-                actualFieldType = element;
+                actualFieldType = element; // تعيين النوع الصحيح
             } else {
                 // الحقول الديناميكية (الخبرة والتعليم)
                 field = element.parentElement.querySelector('input, textarea, select');
-                actualFieldType = fieldType;
+                actualFieldType = fieldType; // استخدام النوع المرسل
             }
             
             if (!field) return;
@@ -701,6 +701,9 @@
                 // استخدام Pollinations.ai API لتوليد النصوص
                 const API_TOKEN = 'demo'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
                 const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
+                
+                // الحصول على المطالبة بناءً على النوع الفعلي
+                const prompt = getFieldPrompt(actualFieldType);
                 
                 // جمع السياق من الحقول الأخرى
                 const context = gatherContextForField(field, actualFieldType);
