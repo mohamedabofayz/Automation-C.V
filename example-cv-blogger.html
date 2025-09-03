@@ -1,182 +1,158 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>مولد السيرة الذاتية بالذكاء الاصطناعي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منشئ السير الذاتية الاحترافية - نسخة Blogger</title>
+  <meta name="description" content="أداة مجانية لإنشاء سير ذاتية احترافية محسنة لأنظمة ATS">
+
   <style>
-    body {
-      font-family: "Cairo", sans-serif;
-      background: #f7f9fc;
-      margin: 20px;
-    }
-    .btn {
-      padding: 10px 20px;
-      background: #2E86C1;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    .btn:hover { background: #1B4F72; }
-    .cv-preview {
-      display: none;
-      margin-top: 20px;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       padding: 20px;
-      border-radius: 12px;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      line-height: 1.6;
     }
-    .cv-header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      border-bottom: 2px solid #eee;
-      padding-bottom: 15px;
+    .container { 
+      max-width: 1000px; margin: 0 auto; 
+      background: white; border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-    .cv-header img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #2E86C1;
-    }
-    .cv-header .info h2 { margin: 0; }
-    .cv-section {
-      margin: 20px 0;
-    }
-    .cv-section h3 {
-      color: #2E86C1;
-      margin-bottom: 8px;
-    }
-    ul { padding-left: 20px; }
-    
-    /* --- قوالب مختلفة --- */
-    .theme-default { background: white; color: black; }
-    .theme-dark { background: #222; color: white; }
-    .theme-dark h3 { color: #F39C12; }
-    .theme-elegant { background: #fdfaf6; border-left: 5px solid #8e44ad; }
-    .theme-elegant h3 { color: #8e44ad; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; text-align: center; }
+    .header h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 700; }
+    .content { padding: 40px; }
+    .progress-bar { background: #e9ecef; height: 6px; border-radius: 3px; margin: 20px 0; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.5s ease; }
+    .form-section { background: #f8f9fa; margin: 25px 0; padding: 30px; border-radius: 10px; border: 1px solid #e9ecef; transition: all 0.3s ease; }
+    .form-section:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .section-title { font-size: 1.3rem; font-weight: 600; color: #495057; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .form-group { margin: 15px 0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; color: #495057; }
+    input, textarea, select { width: 100%; padding: 12px 15px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px; transition: border-color 0.3s ease; font-family: inherit; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+    .btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; margin: 10px 5px; transition: all 0.3s ease; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+    .btn-secondary { background: #6c757d; }
+    .btn-success { background: #28a745; }
+    .add-btn { background: #17a2b8; padding: 10px 20px; font-size: 14px; }
+    .experience-item, .education-item { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; border: 1px solid #dee2e6; }
+    .remove-btn { background: #dc3545; padding: 5px 10px; font-size: 12px; float: left; }
+    .preview { display: none; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 30px; }
+    .cv-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #667eea; }
+    .cv-header h2 { font-size: 2rem; color: #495057; margin-bottom: 5px; }
+    .cv-header .job-title { font-size: 1.2rem; color: #667eea; font-weight: 600; }
+    .cv-contact { display: flex; justify-content: center; gap: 20px; margin-top: 15px; flex-wrap: wrap; }
+    .cv-section { margin: 25px 0; }
+    .cv-section h3 { font-size: 1.3rem; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 5px; margin-bottom: 15px; }
+    @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } .cv-contact { flex-direction: column; align-items: center; } }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h1>منشئ السير الذاتية الاحترافية</h1>
+      <p>أداة مجانية لإنشاء سير ذاتية محسنة لأنظمة ATS ومحركات البحث</p>
+    </div>
 
-<h1>مولد السيرة الذاتية بالذكاء الاصطناعي 🤖</h1>
-
-<input type="file" id="profileImage" accept="image/*" class="btn">
-<br><br>
-
-<button class="btn" onclick="generateAICV()">إنشاء تلقائي</button>
-<button class="btn" onclick="changeTheme('theme-default')">القالب الافتراضي</button>
-<button class="btn" onclick="changeTheme('theme-dark')">قالب داكن</button>
-<button class="btn" onclick="changeTheme('theme-elegant')">قالب أنيق</button>
-
-<div class="cv-preview" id="cvPreview">
-  <div id="cvContent"></div>
-</div>
-
-<script>
-const API_TOKEN = "ضع_التوكن_الخاص_بك";
-
-let currentTheme = "theme-default";
-let profileImageURL = "";
-
-document.getElementById("profileImage").addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      profileImageURL = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-function changeTheme(theme) {
-  currentTheme = theme;
-  document.getElementById("cvPreview").className = `cv-preview ${theme}`;
-}
-
-async function generateAICV() {
-  const prompt = `
-أنت خبير في كتابة السير الذاتية باحترافية عالية.
-قم بإنشاء سيرة ذاتية منظمة بصيغة JSON فقط لشخص افتراضي.
-⚡ التنسيق المطلوب:
-{
-  "Personal_Info": {
-    "Name": "الاسم الكامل",
-    "JobTitle": "المسمى الوظيفي",
-    "Email": "الايميل",
-    "Phone": "الهاتف"
-  },
-  "Summary": "الملخص الشخصي",
-  "Experience": ["خبرة 1", "خبرة 2"],
-  "Education": ["شهادة 1", "شهادة 2"],
-  "Skills": ["مهارة 1", "مهارة 2"],
-  "Achievements": ["إنجاز 1", "إنجاز 2"]
-}
-`;
-
-  try {
-    const response = await fetch(`https://text.pollinations.ai/openai?token=${API_TOKEN}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [{ role: "user", content: prompt }] })
-    });
-
-    const raw = await response.json();
-    const content = raw?.choices?.[0]?.message?.content || "";
-    const clean = content.replace(/```json|```/g, "").trim();
-    const cvData = JSON.parse(clean);
-
-    let html = `
-      <div class="cv-header">
-        ${profileImageURL ? `<img src="${profileImageURL}" alt="الصورة الشخصية">` : ""}
-        <div class="info">
-          <h2>${cvData.Personal_Info.Name}</h2>
-          <div class="job-title">${cvData.Personal_Info.JobTitle || ""}</div>
-          <div class="contact-info">
-            <p>📧 ${cvData.Personal_Info.Email}</p>
-            <p>📞 ${cvData.Personal_Info.Phone}</p>
+    <div class="content">
+      <form id="cvForm">
+        <!-- بيانات أساسية -->
+        <div class="form-section">
+          <div class="form-row">
+            <div class="form-group"><label>الاسم الأول *</label><input type="text" id="firstName" required></div>
+            <div class="form-group"><label>الاسم الأخير *</label><input type="text" id="lastName" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>البريد الإلكتروني *</label><input type="email" id="email" required></div>
+            <div class="form-group"><label>رقم الهاتف *</label><input type="tel" id="phone" required></div>
           </div>
         </div>
+        <!-- الوظيفة والملخص -->
+        <div class="form-section">
+          <div class="form-group"><label>المسمى الوظيفي *</label><input type="text" id="jobTitle" required></div>
+          <div class="form-group"><label>الملخص المهني *</label><textarea id="summary" rows="3" required></textarea></div>
+        </div>
+        <!-- الخبرة -->
+        <div class="form-section">
+          <div id="experienceContainer">
+            <div class="experience-item">
+              <input type="text" name="expTitle" placeholder="المسمى الوظيفي">
+              <input type="text" name="expCompany" placeholder="اسم الشركة">
+              <textarea name="expDescription" rows="3" placeholder="إنجازاتك..."></textarea>
+            </div>
+          </div>
+          <button type="button" class="btn add-btn" onclick="addExperience()">+ إضافة خبرة</button>
+        </div>
+      </form>
+
+      <!-- أزرار التحكم -->
+      <div style="text-align:center;">
+        <button class="btn" onclick="generateCV()">🔄 إنشاء السيرة الذاتية</button>
       </div>
 
-      <div class="cv-section">
-        <h3>💡 الملخص</h3>
-        <p>${cvData.Summary || ""}</p>
+      <!-- معاينة -->
+      <div id="cvPreview" class="preview">
+        <div id="cvContent"></div>
       </div>
+    </div>
+  </div>
 
-      <div class="cv-section">
-        <h3>💼 الخبرات العملية</h3>
-        <ul>${(cvData.Experience || []).map(exp => `<li>${exp}</li>`).join("")}</ul>
+<script>
+function addExperience() {
+  const container = document.getElementById('experienceContainer');
+  const div = document.createElement('div');
+  div.className = 'experience-item';
+  div.innerHTML = `
+    <input type="text" name="expTitle" placeholder="المسمى الوظيفي">
+    <input type="text" name="expCompany" placeholder="اسم الشركة">
+    <textarea name="expDescription" rows="3" placeholder="إنجازاتك..."></textarea>
+  `;
+  container.appendChild(div);
+}
+
+function generateCV() {
+  const firstName = document.getElementById('firstName').value;
+  const lastName = document.getElementById('lastName').value;
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('phone').value;
+  const jobTitle = document.getElementById('jobTitle').value;
+  const summary = document.getElementById('summary').value;
+
+  const experiences = [];
+  document.querySelectorAll('.experience-item').forEach(item => {
+    const title = item.querySelector('input[name="expTitle"]').value;
+    const company = item.querySelector('input[name="expCompany"]').value;
+    const description = item.querySelector('textarea[name="expDescription"]').value;
+    if (title || company) experiences.push({title, company, description});
+  });
+
+  let html = `
+    <div class="cv-header">
+      <h2>${firstName} ${lastName}</h2>
+      <div class="job-title">${jobTitle}</div>
+      <div class="cv-contact">
+        ${email ? `<span>📧 ${email}</span>` : ""}
+        ${phone ? `<span>📱 ${phone}</span>` : ""}
       </div>
+    </div>
+  `;
 
-      <div class="cv-section">
-        <h3>🎓 التعليم</h3>
-        <ul>${(cvData.Education || []).map(edu => `<li>${edu}</li>`).join("")}</ul>
-      </div>
-
-      <div class="cv-section">
-        <h3>🛠️ المهارات</h3>
-        <ul>${(cvData.Skills || []).map(skill => `<li>${skill}</li>`).join("")}</ul>
-      </div>
-
-      <div class="cv-section">
-        <h3>🏆 الإنجازات</h3>
-        <ul>${(cvData.Achievements || []).map(a => `<li>${a}</li>`).join("")}</ul>
-      </div>
-    `;
-
-    document.getElementById("cvContent").innerHTML = html;
-    document.getElementById("cvPreview").style.display = "block";
-    changeTheme(currentTheme);
-
-  } catch (err) {
-    alert("⚠️ خطأ في الاتصال بالذكاء الاصطناعي: " + err.message);
+  if (summary) html += `<div class="cv-section"><h3>الملخص</h3><p>${summary}</p></div>`;
+  if (experiences.length > 0) {
+    html += `<div class="cv-section"><h3>الخبرة العملية</h3>`;
+    experiences.forEach(exp => {
+      html += `<p><strong>${exp.title}</strong> - ${exp.company}<br>${exp.description}</p>`;
+    });
+    html += `</div>`;
   }
+
+  document.getElementById('cvContent').innerHTML = html;
+  document.getElementById('cvPreview').style.display = 'block';
 }
 </script>
-
 </body>
 </html>
