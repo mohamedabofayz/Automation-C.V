@@ -211,6 +211,27 @@
             white-space: nowrap;
             min-width: 60px;
             height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-btn.loading {
+            background: #4a6cf7;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(74, 108, 247, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0); }
+        }
+        
+        .ai-btn i {
+            font-style: normal;
+            font-size: 14px;
         }
         
         .btn { 
@@ -334,6 +355,35 @@
             margin-top: 5px;
         }
         
+        .profile-photo-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .profile-photo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #667eea;
+            background: #f8f9fa;
+        }
+        
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        
         @media (max-width: 768px) {
             body { padding: 10px; }
             .content { padding: 20px; }
@@ -386,6 +436,19 @@
                 </div>
             </div>
             
+            <!-- صورة شخصية -->
+            <div class="profile-photo-section">
+                <h3>الصورة الشخصية</h3>
+                <div class="profile-photo-container">
+                    <img id="profilePhoto" class="profile-photo" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
+                </div>
+                <div class="photo-actions">
+                    <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                    <button class="btn" onclick="document.getElementById('photoUpload').click()">📸 تحميل صورة</button>
+                    <button class="btn btn-secondary" onclick="generateProfilePhoto()">🤖 توليد صورة AI</button>
+                </div>
+            </div>
+            
             <!-- النماذج -->
             <form id="cvForm">
                 <!-- البيانات الشخصية -->
@@ -397,55 +460,31 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">الاسم الأول *</label>
-                            <div class="input-with-ai">
-                                <input type="text" id="firstName" required placeholder="أحمد">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('firstName')">توليدي</button>
-                            </div>
+                            <input type="text" id="firstName" required placeholder="أحمد">
                         </div>
                         <div class="form-group">
                             <label for="lastName">الاسم الأخير *</label>
-                            <div class="input-with-ai">
-                                <input type="text" id="lastName" required placeholder="محمد">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('lastName')">توليدي</button>
-                            </div>
+                            <input type="text" id="lastName" required placeholder="محمد">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="email">البريد الإلكتروني *</label>
-                            <div class="input-with-ai">
-                                <input type="email" id="email" required placeholder="ahmed.mohammed@gmail.com">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('email')">توليدي</button>
-                            </div>
+                            <input type="email" id="email" required placeholder="ahmed.mohammed@gmail.com">
                         </div>
                         <div class="form-group">
                             <label for="phone">رقم الهاتف *</label>
-                            <div class="input-with-ai">
-                                <input type="tel" id="phone" required placeholder="+966 50 123 4567">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('phone')">توليدي</button>
-                            </div>
+                            <input type="tel" id="phone" required placeholder="+966 50 123 4567">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="location">المدينة، البلد</label>
-                            <div class="input-with-ai">
-                                <input type="text" id="location" placeholder="الرياض، السعودية">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('location')">توليدي</button>
-                            </div>
+                            <input type="text" id="location" placeholder="الرياض، السعودية">
                         </div>
                         <div class="form-group">
                             <label for="linkedin">LinkedIn</label>
-                            <div class="input-with-ai">
-                                <input type="url" id="linkedin" placeholder="https://linkedin.com/in/ahmed-mohammed ">
-                                <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                <button type="button" class="ai-btn" onclick="generateTextForField('linkedin')">توليدي</button>
-                            </div>
+                            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/ahmed-mohammed ">
                         </div>
                     </div>
                 </div>
@@ -460,16 +499,16 @@
                         <label for="jobTitle">المسمى الوظيفي المطلوب *</label>
                         <div class="input-with-ai">
                             <input type="text" id="jobTitle" required placeholder="مطور ويب Full Stack">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('jobTitle')">توليدي</button>
+                            <!-- توليد مسمى وظيفي باستخدام الذكاء الاصطناعي مع سياق الخبرة -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('jobTitle')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="summary">الملخص المهني *</label>
                         <div class="input-with-ai">
                             <textarea id="summary" rows="4" required placeholder="اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز خبرتك وإنجازاتك الرئيسية..."></textarea>
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('summary')">توليدي</button>
+                            <!-- توليد ملخص مهني باستخدام الذكاء الاصطناعي مع سياق الخبرة والتعليم -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('summary')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -487,16 +526,16 @@
                                     <label>المسمى الوظيفي</label>
                                     <div class="input-with-ai">
                                         <input type="text" name="expTitle" placeholder="مطور ويب أول">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')">توليدي</button>
+                                        <!-- توليد مسمى وظيفي لخبرة عملية -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>اسم الشركة</label>
                                     <div class="input-with-ai">
                                         <input type="text" name="expCompany" placeholder="شركة التقنية المتقدمة">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')">توليدي</button>
+                                        <!-- توليد اسم شركة -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                             </div>
@@ -505,16 +544,16 @@
                                     <label>تاريخ البداية</label>
                                     <div class="input-with-ai">
                                         <input type="month" name="expStart">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')">توليدي</button>
+                                        <!-- توليد تاريخ بدء -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>تاريخ النهاية</label>
                                     <div class="input-with-ai">
                                         <input type="month" name="expEnd">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')">توليدي</button>
+                                        <!-- توليد تاريخ نهاية -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                             </div>
@@ -522,8 +561,8 @@
                                 <label>الإنجازات والمسؤوليات</label>
                                 <div class="input-with-ai">
                                     <textarea name="expDescription" rows="3" placeholder="• طوّرت 3 تطبيقات ويب خدمت أكثر من 10,000 مستخدم&#10;• حسّنت الأداء بنسبة 40% من خلال تحسين الكود&#10;• قدت فريق من 4 مطورين في مشروع إعادة التصميم"></textarea>
-                                    <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')">توليدي</button>
+                                    <!-- توليد إنجازات ومسؤوليات -->
+                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')"><i>AI</i> توليد</button>
                                 </div>
                             </div>
                         </div>
@@ -550,16 +589,16 @@
                                             <option value="دكتوراه">دكتوراه</option>
                                             <option value="دبلوم">دبلوم</option>
                                         </select>
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')">توليدي</button>
+                                        <!-- توليد درجة علمية -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>التخصص</label>
                                     <div class="input-with-ai">
                                         <input type="text" name="eduField" placeholder="علوم الحاسب">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')">توليدي</button>
+                                        <!-- توليد تخصص دراسي -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                             </div>
@@ -568,16 +607,16 @@
                                     <label>اسم المؤسسة التعليمية</label>
                                     <div class="input-with-ai">
                                         <input type="text" name="eduInstitution" placeholder="جامعة الملك سعود">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')">توليدي</button>
+                                        <!-- توليد اسم مؤسسة تعليمية -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label>سنة التخرج</label>
                                     <div class="input-with-ai">
                                         <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
-                                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')">توليدي</button>
+                                        <!-- توليد سنة تخرج -->
+                                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')"><i>AI</i> توليد</button>
                                     </div>
                                 </div>
                             </div>
@@ -585,8 +624,8 @@
                                 <label>المعدل التراكمي (اختياري)</label>
                                 <div class="input-with-ai">
                                     <input type="text" name="eduGPA" placeholder="3.8 من 4.0">
-                                    <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')">توليدي</button>
+                                    <!-- توليد معدل تراكمي -->
+                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')"><i>AI</i> توليد</button>
                                 </div>
                             </div>
                         </div>
@@ -604,8 +643,8 @@
                         <label>المهارات التقنية</label>
                         <div class="input-with-ai">
                             <textarea id="technicalSkills" rows="3" placeholder="JavaScript, React, Node.js, Python, SQL, Git, Docker"></textarea>
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('technicalSkills')">توليدي</button>
+                            <!-- توليد مهارات تقنية متناسبة مع المسمى الوظيفي والخبرة -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('technicalSkills')"><i>AI</i> توليد</button>
                         </div>
                         <small style="color: #6c757d;">افصل بين المهارات بفاصلة</small>
                     </div>
@@ -613,8 +652,8 @@
                         <label>المهارات المهنية</label>
                         <div class="input-with-ai">
                             <textarea id="softSkills" rows="2" placeholder="إدارة الفرق, التواصل الفعال, حل المشكلات, العمل تحت الضغط"></textarea>
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('softSkills')">توليدي</button>
+                            <!-- توليد مهارات مهنية متناسبة مع المسمى الوظيفي والخبرة -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('softSkills')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -692,7 +731,10 @@
             
             // إظهار مؤشر التحميل
             const originalText = element.textContent;
+            const originalBackground = element.style.background;
             element.textContent = "جاري التوليد...";
+            element.style.background = "#4a6cf7";
+            element.classList.add('loading');
             element.disabled = true;
             
             try {
@@ -700,10 +742,16 @@
                 const API_TOKEN = 'twuw5P7YvER0qpSD'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
                 const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
                 
+                // جمع السياق من الحقول الأخرى
+                const context = gatherContextForField(field, fieldType);
+                
+                // تعديل المطالبة بناءً على السياق
+                const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
+                
                 const payload = { 
                     messages: [{ 
                         role: "user", 
-                        content: prompt 
+                        content: fullPrompt 
                     }],
                     max_tokens: 200,
                     temperature: 0.7
@@ -725,7 +773,10 @@
                 let generatedText = data.choices[0].message.content.trim();
                 
                 // معالجة خاصة للحقول المختلفة
-                if (field.tagName === 'INPUT' && field.type === 'email') {
+                if (fieldType === 'experience-description' || field.id === 'summary') {
+                    // للوصف والملخص، تأكد من أن النص مناسب
+                    generatedText = formatProfessionalText(generatedText);
+                } else if (field.tagName === 'INPUT' && field.type === 'email') {
                     // للبريد الإلكتروني، نستخرج أول بريد إلكتروني في النص
                     const emailMatch = generatedText.match(/[\w.-]+@[\w.-]+\.\w+/);
                     generatedText = emailMatch ? emailMatch[0] : generatedText;
@@ -767,34 +818,173 @@
                 alert('حدث خطأ أثناء توليد النص: ' + error.message);
             } finally {
                 // إعادة النص الأصلي للزر
-                element.textContent = originalText;
-                element.disabled = false;
+                setTimeout(() => {
+                    element.textContent = originalText;
+                    element.style.background = originalBackground;
+                    element.classList.remove('loading');
+                    element.disabled = false;
+                }, 300);
+            }
+        }
+        
+        // تجميع السياق من الحقول الأخرى لتحسين التوليد
+        function gatherContextForField(field, fieldType) {
+            const context = [];
+            
+            // جمع البيانات الأساسية
+            const firstName = document.getElementById('firstName')?.value;
+            const lastName = document.getElementById('lastName')?.value;
+            const jobTitle = document.getElementById('jobTitle')?.value;
+            
+            if (firstName && lastName) {
+                context.push(`الاسم: ${firstName} ${lastName}`);
+            }
+            
+            if (jobTitle) {
+                context.push(`المسمى الوظيفي المطلوب: ${jobTitle}`);
+            }
+            
+            // جمع الخبرات
+            const experiences = [];
+            document.querySelectorAll('.experience-item').forEach(item => {
+                const title = item.querySelector('input[name="expTitle"]')?.value;
+                const company = item.querySelector('input[name="expCompany"]')?.value;
+                const description = item.querySelector('textarea[name="expDescription"]')?.value;
+                
+                if (title || company || description) {
+                    experiences.push(`- ${title ? title + ' في ' : ''}${company || ''}${description ? ': ' + description.substring(0, 100) + '...' : ''}`);
+                }
+            });
+            
+            if (experiences.length > 0) {
+                context.push(`الخبرات العملية: ${experiences.join('\n')}`);
+            }
+            
+            // جمع التعليم
+            const educations = [];
+            document.querySelectorAll('.education-item').forEach(item => {
+                const degree = item.querySelector('select[name="eduDegree"]')?.value;
+                const field = item.querySelector('input[name="eduField"]')?.value;
+                const institution = item.querySelector('input[name="eduInstitution"]')?.value;
+                
+                if (degree || field || institution) {
+                    educations.push(`- ${degree || ''} في ${field || ''} من ${institution || ''}`);
+                }
+            });
+            
+            if (educations.length > 0) {
+                context.push(`المؤهلات العلمية: ${educations.join('\n')}`);
+            }
+            
+            // جمع المهارات
+            const technicalSkills = document.getElementById('technicalSkills')?.value;
+            const softSkills = document.getElementById('softSkills')?.value;
+            
+            if (technicalSkills) {
+                context.push(`المهارات التقنية: ${technicalSkills}`);
+            }
+            
+            if (softSkills) {
+                context.push(`المهارات المهنية: ${softSkills}`);
+            }
+            
+            // إضافة سياق خاص حسب نوع الحقل
+            if (fieldType === 'experience-title' || fieldType === 'experience-description') {
+                context.push('يرجى توليد محتوى يناسب خبرة عملية في مجال التكنولوجيا والتطوير');
+            } else if (fieldType === 'education-field' || fieldType === 'education-degree') {
+                context.push('يرجى توليد محتوى يناسب مؤهلات تعليمية في مجال التكنولوجيا والتطوير');
+            } else if (field.id === 'technicalSkills' || field.id === 'softSkills') {
+                context.push('يرجى توليد مهارات مناسبة للمسمى الوظيفي المطلوب مع التركيز على المهارات الأكثر طلباً في السوق');
+            } else if (field.id === 'summary') {
+                context.push('يرجى توليد ملخص مهني مختصر في 2-3 أسطر يبرز الإنجازات الرئيسية والخبرات ذات الصلة');
+            }
+            
+            return context.length > 0 ? context.join('\n') : '';
+        }
+        
+        // تنسيق النص المهني بشكل مناسب
+        function formatProfessionalText(text) {
+            // إزالة العبارات غير الاحترافية
+            text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم/g, '');
+            
+            // التأكد من أن النص يبدأ بجملة قوية
+            if (!/^(خبير|محترف|مختص|أمتلك|لدي|أعمل|أجيد|أتمتع)/i.test(text)) {
+                text = "أمتلك " + text;
+            }
+            
+            // إزالة التكرارات
+            text = text.replace(/(خبرة واسعة في|خبرة كبيرة في)/gi, "خبرة في");
+            
+            // التأكد من أن النص مختصر (2-3 أسطر)
+            const lines = text.split('\n').filter(line => line.trim().length > 0);
+            if (lines.length > 3) {
+                text = lines.slice(0, 3).join(' ');
+            }
+            
+            // إضافة نقاط للإنجازات
+            if (text.includes('•')) {
+                // النص يحتوي بالفعل على نقاط
+            } else if (text.includes('و ') || text.includes(',')) {
+                // تحويل النص إلى نقاط
+                const sentences = text.split(/[،,]\s+/);
+                text = sentences.map(s => `• ${s.trim()}`).join('\n');
+            }
+            
+            return text.trim();
+        }
+        
+        // توليد صورة شخصية باستخدام الذكاء الاصطناعي
+        async function generateProfilePhoto() {
+            const profilePhoto = document.getElementById('profilePhoto');
+            const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
+            
+            // إظهار مؤشر التحميل
+            profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
+            
+            try {
+                // استخدام خدمة توليد الصور
+                const prompt = `صورة احترافية لشخص في مجال ${jobTitle}، خلفية مكتب حديثة، مظهر مهني، إضاءة ممتازة`;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=150&height=150&nologo=true`;
+                
+                // تحميل الصورة
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.src = imageUrl;
+                
+                img.onload = function() {
+                    profilePhoto.src = imageUrl;
+                };
+                
+                img.onerror = function() {
+                    // في حالة الخطأ، استخدم صورة افتراضية
+                    profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
+                    alert('فشل في توليد الصورة. يرجى المحاولة مرة أخرى.');
+                };
+                
+            } catch (error) {
+                console.error('Error generating profile photo:', error);
+                profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
+                alert('حدث خطأ أثناء توليد الصورة: ' + error.message);
             }
         }
         
         // تحديد مطالبة التوليد بناءً على نوع الحقل
         function getFieldPrompt(fieldType) {
             const prompts = {
-                'firstName': 'اكتب اسماً عربياً شائعاً مناسباً لسيرة ذاتية مهنية',
-                'lastName': 'اكتب اسماً عائلة عربياً شائعاً مناسباً لسيرة ذاتية مهنية',
-                'email': 'اكتب عنوان بريد إلكتروني احترافي نموذجي',
-                'phone': 'اكتب رقم هاتف احترافي نموذجي مع رمز الدولة',
-                'location': 'اكتب موقعاً جغرافياً احترافياً نموذجياً',
-                'linkedin': 'اكتب رابط LinkedIn نموذجياً',
-                'jobTitle': 'اكتب مسمى وظيفياً احترافياً مناسباً لسيرة ذاتية',
-                'summary': 'اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز الخبرة والإنجازات الرئيسية',
-                'experience-title': 'اكتب مسمى وظيفياً لخبرة عملية في مجال التكنولوجيا',
-                'experience-company': 'اكتب اسماً لشركة تقنية احترافية',
-                'experience-start': 'اكتب تاريخ بداية لخبرة عملية بتنسيق YYYY-MM',
-                'experience-end': 'اكتب تاريخ نهاية لخبرة عملية بتنسيق YYYY-MM أو "الحالي"',
-                'experience-description': 'اكتب وصفاً للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس',
-                'education-degree': 'اكتب درجة علمية مناسبة لسيرة ذاتية في مجال التكنولوجيا',
-                'education-field': 'اكتب تخصصاً دراسياً مناسباً لسيرة ذاتية في مجال التكنولوجيا',
-                'education-institution': 'اكتب اسماً لمؤسسة تعليمية احترافية',
-                'education-year': 'اكتب سنة تخرج بتنسيق YYYY',
-                'education-gpa': 'اكتب معدلاً تراكمياً بتنسيق X.X من Y.Y',
-                'technicalSkills': 'اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة مطور ويب، مفصولة بفواصل',
-                'softSkills': 'اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة مطور ويب، مفصولة بفواصل'
+                'jobTitle': 'اكتب مسمى وظيفياً احترافياً مناسباً لسيرة ذاتية مع التركيز على المسميات الشائعة في السوق',
+                'summary': 'اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز الخبرة والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس',
+                'experience-title': 'اكتب مسمى وظيفياً مناسباً لخبرة عملية في مجال التكنولوجيا مع مراعاة المسميات الشائعة في السوق',
+                'experience-company': 'اكتب اسماً لشركة تقنية احترافية مع مراعاة الشركات الرائدة في السوق',
+                'experience-start': 'اكتب تاريخ بداية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
+                'experience-end': 'اكتب تاريخ نهاية لخبرة عملية بتنسيق YYYY-MM مع مراعاة أن تكون الفترة مناسبة لسيرة مهنية واقعية',
+                'experience-description': 'اكتب وصفاً احترافياً للإنجازات والمسؤوليات في خبرة عملية في مجال التكنولوجيا، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة',
+                'education-degree': 'اكتب درجة علمية مناسبة لسيرة ذاتية في مجال التكنولوجيا مع مراعاة الشهادات المعترف بها',
+                'education-field': 'اكتب تخصصاً دراسياً مناسباً لسيرة ذاتية في مجال التكنولوجيا مع مراعاة التخصصات الحديثة والمطلوبة',
+                'education-institution': 'اكتب اسماً لمؤسسة تعليمية احترافية مع مراعاة الجامعات الرائدة في المنطقة',
+                'education-year': 'اكتب سنة تخرج بتنسيق YYYY مع مراعاة أن تكون السنة مناسبة لسيرة مهنية واقعية',
+                'education-gpa': 'اكتب معدلاً تراكمياً واقعياً بتنسيق X.X من Y.Y مع مراعاة المعدلات الشائعة',
+                'technicalSkills': 'اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل',
+                'softSkills': 'اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة مطور ويب، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل'
             };
             
             return prompts[fieldType] || 'اكتب نصاً مناسباً لهذا الحقل في سيرة ذاتية احترافية';
@@ -813,16 +1003,16 @@
                         <label>المسمى الوظيفي</label>
                         <div class="input-with-ai">
                             <input type="text" name="expTitle" placeholder="مطور ويب">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')">توليدي</button>
+                            <!-- توليد مسمى وظيفي لخبرة عملية -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-title')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>اسم الشركة</label>
                         <div class="input-with-ai">
                             <input type="text" name="expCompany" placeholder="اسم الشركة">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')">توليدي</button>
+                            <!-- توليد اسم شركة -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-company')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -831,16 +1021,16 @@
                         <label>تاريخ البداية</label>
                         <div class="input-with-ai">
                             <input type="month" name="expStart">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')">توليدي</button>
+                            <!-- توليد تاريخ بدء -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-start')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>تاريخ النهاية</label>
                         <div class="input-with-ai">
                             <input type="month" name="expEnd">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')">توليدي</button>
+                            <!-- توليد تاريخ نهاية -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-end')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -848,8 +1038,8 @@
                     <label>الإنجازات والمسؤوليات</label>
                     <div class="input-with-ai">
                         <textarea name="expDescription" rows="3" placeholder="اكتب إنجازاتك ومسؤولياتك الرئيسية..."></textarea>
-                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')">توليدي</button>
+                        <!-- توليد إنجازات ومسؤوليات -->
+                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')"><i>AI</i> توليد</button>
                     </div>
                 </div>
             `;
@@ -875,16 +1065,16 @@
                                 <option value="دكتوراه">دكتوراه</option>
                                 <option value="دبلوم">دبلوم</option>
                             </select>
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')">توليدي</button>
+                            <!-- توليد درجة علمية -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-degree')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>التخصص</label>
                         <div class="input-with-ai">
                             <input type="text" name="eduField" placeholder="التخصص">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')">توليدي</button>
+                            <!-- توليد تخصص دراسي -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-field')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -893,16 +1083,16 @@
                         <label>اسم المؤسسة التعليمية</label>
                         <div class="input-with-ai">
                             <input type="text" name="eduInstitution" placeholder="اسم الجامعة أو المعهد">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')">توليدي</button>
+                            <!-- توليد اسم مؤسسة تعليمية -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-institution')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>سنة التخرج</label>
                         <div class="input-with-ai">
                             <input type="number" name="eduYear" placeholder="2020" min="1980" max="2030">
-                            <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')">توليدي</button>
+                            <!-- توليد سنة تخرج -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-year')"><i>AI</i> توليد</button>
                         </div>
                     </div>
                 </div>
@@ -910,8 +1100,8 @@
                     <label>المعدل التراكمي (اختياري)</label>
                     <div class="input-with-ai">
                         <input type="text" name="eduGPA" placeholder="المعدل">
-                        <!-- توليد نص تلقائي باستخدام الذكاء الاصطناعي (API Pollinations.ai) -->
-                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')">توليدي</button>
+                        <!-- توليد معدل تراكمي -->
+                        <button type="button" class="ai-btn" onclick="generateTextForField(this, 'education-gpa')"><i>AI</i> توليد</button>
                     </div>
                 </div>
             `;
@@ -1169,8 +1359,27 @@
             setTimeout(() => {
                 updateProgress();
             }, 1000);
+            
+            // تحميل الصورة الشخصية من localStorage إذا وجدت
+            const savedPhoto = localStorage.getItem('profilePhoto');
+            if (savedPhoto) {
+                document.getElementById('profilePhoto').src = savedPhoto;
+            }
+            
+            // معالجة تحميل الصورة الشخصية
+            document.getElementById('photoUpload').addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        document.getElementById('profilePhoto').src = event.target.result;
+                        localStorage.setItem('profilePhoto', event.target.result);
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
         });
     </script>
 </body>
 </html>
-```
