@@ -680,11 +680,11 @@
             if (typeof element === 'string') {
                 // الحقول الثابتة
                 field = document.getElementById(element);
-                actualFieldType = element; // تعيين النوع الصحيح
+                actualFieldType = element;
             } else {
                 // الحقول الديناميكية (الخبرة والتعليم)
                 field = element.parentElement.querySelector('input, textarea, select');
-                actualFieldType = fieldType; // استخدام النوع المرسل
+                actualFieldType = fieldType;
             }
             
             if (!field) return;
@@ -698,10 +698,6 @@
             element.disabled = true;
             
             try {
-                // استخدام Pollinations.ai API لتوليد النصوص
-                const API_TOKEN = 'demo'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
-                const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
-                
                 // الحصول على المطالبة بناءً على النوع الفعلي
                 const prompt = getFieldPrompt(actualFieldType);
                 
@@ -711,6 +707,10 @@
                 // تعديل المطالبة بناءً على السياق
                 const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
                 
+                // استخدام Pollinations.ai API لتوليد النصوص
+                const API_TOKEN = 'demo';
+                const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
+                
                 const payload = { 
                     messages: [{ 
                         role: "user", 
@@ -719,9 +719,6 @@
                     max_tokens: 200,
                     temperature: 0.7
                 };
-                
-                // تحسين الاتصال وتقديم معلومات مفيدة للتصحيح
-                console.log("Sending request to AI API with prompt:", fullPrompt);
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -736,7 +733,6 @@
                 }
                 
                 const data = await response.json();
-                console.log("AI API response:", data);
                 
                 if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
                     throw new Error("استجابة غير متوقعة من خدمة الذكاء الاصطناعي");
@@ -746,41 +742,11 @@
                 
                 // معالجة خاصة للحقول المختلفة
                 if (actualFieldType === 'experience-description' || actualFieldType === 'summary') {
-                    // للوصف والملخص، تأكد من أن النص مناسب
                     generatedText = formatProfessionalText(generatedText, actualFieldType);
-                } else if (field.tagName === 'INPUT' && field.type === 'email') {
-                    // للبريد الإلكتروني، نستخرج أول بريد إلكتروني في النص
-                    const emailMatch = generatedText.match(/[\w.-]+@[\w.-]+\.\w+/);
-                    generatedText = emailMatch ? emailMatch[0] : generatedText;
-                } else if (field.tagName === 'INPUT' && field.type === 'tel') {
-                    // لرقم الهاتف، نحافظ على التنسيق
-                    const phoneMatch = generatedText.match(/[\d+\s()-]+/);
-                    generatedText = phoneMatch ? phoneMatch[0] : generatedText;
                 }
                 
                 // ملء الحقل بالنص المولد
-                if (field.tagName === 'SELECT') {
-                    // للحقول المختارة (select)
-                    const options = field.options;
-                    let foundMatch = false;
-                    
-                    for (let i = 0; i < options.length; i++) {
-                        if (options[i].value.toLowerCase().includes(generatedText.toLowerCase()) || 
-                            options[i].textContent.toLowerCase().includes(generatedText.toLowerCase())) {
-                            field.selectedIndex = i;
-                            foundMatch = true;
-                            break;
-                        }
-                    }
-                    
-                    // إذا لم يتم العثور على تطابق، نستخدم أول خيار
-                    if (!foundMatch && options.length > 0) {
-                        field.selectedIndex = 0;
-                    }
-                } else {
-                    // للحقول النصية (input و textarea)
-                    field.value = generatedText;
-                }
+                field.value = generatedText;
                 
                 // تحديث تقدم النموذج
                 updateProgress();
