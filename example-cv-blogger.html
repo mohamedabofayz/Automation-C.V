@@ -440,7 +440,7 @@
             <div class="profile-photo-section">
                 <h3>الصورة الشخصية</h3>
                 <div class="profile-photo-container">
-                    <img id="profilePhoto" class="profile-photo" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
+                    <img id="profilePhoto" class="profile-photo" src="image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
                 </div>
                 <div class="photo-actions">
                     <input type="file" id="photoUpload" accept="image/*" style="display: none;">
@@ -699,7 +699,7 @@
             
             try {
                 // استخدام Pollinations.ai API لتوليد النصوص
-                const API_TOKEN = 'demo'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
+                const API_TOKEN = 'twuw5P7YvER0qpSD'; // يمكنك استخدام 'demo' أو استبدالها بمفتاح خاص بك
                 const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
                 
                 // جمع السياق من الحقول الأخرى
@@ -708,11 +708,9 @@
                 // تعديل المطالبة بناءً على السياق
                 const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
                 
-                const payload = { 
-                    messages: [{ 
-                        role: "user", 
-                        content: fullPrompt 
-                    }],
+                // تحسين طلب الـ API وفقاً للوثائق الصحيحة
+                const payload = {
+                    prompt: fullPrompt,
                     max_tokens: 200,
                     temperature: 0.7
                 };
