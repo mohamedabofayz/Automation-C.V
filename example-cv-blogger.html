@@ -1,128 +1,55 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-<script type="text/javascript">
-  // This is a CodeSandbox injection script that's used to
-  // add navigation and inspector functionality to the preview
-  (function () {
-    // 1) Get the <script> tag that's currently running:
-    var me = document.currentScript;
-
-    // 2) Create the blocking‐style <script> to load:
-    var script = document.createElement("script");
-    script.src = "https://codesandbox.io/p/preview-protocol.js ";
-
-    // By default a dynamically‐inserted <script> is async=true.
-    // Turn async off to make it behave like a normal blocking <script>:
-    script.async = false;
-    // (Do NOT set defer.)
-
-    // 3) Insert it immediately after the current <script>:
-    me.parentNode.insertBefore(script, me);
-  })();
-
-  const isIFramePreview = window.top !== window.self;
-
-  // Only run this script in editor context
-  if (isIFramePreview) {
-    // This script is used to enable Chrome DevTools functionality
-    (function () {
-      var script = document.createElement("script");
-      script.src =
-        "https://codesandbox.io/p/chrome-devtool/protocol/index.js ";
-
-      script.onload = () => {
-        const devtoolProtocol = window.chobitsu;
-        if (devtoolProtocol) {
-          window.addEventListener("message", (event) => {
-            const { type, data } = event.data;
-
-            if (type === "FROM_DEVTOOL") {
-              devtoolProtocol.sendRawMessage(data);
-            }
-          });
-
-          devtoolProtocol.setOnMessage((data) => {
-            if (data.includes('"id":"tmp')) {
-              return;
-            }
-
-            window.parent.postMessage({ type: "TO_DEVTOOL", data }, "*");
-          });
-
-          devtoolProtocol.sendRawMessage(
-            `{"id":5,"method":"Runtime.enable","params":{}}
-          );
-        }        
-      }
-
-      (document.head || document.documentElement).prepend(script);
-    })();
-  }
-
-  if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined") {
-    let nextID = 0;
-    let hook = (__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
-      renderers: new Map(),
-      supportsFiber: true,
-      inject: (renderer) => {
-        const id = nextID++;
-        hook.renderers.set(id, renderer);
-        return id;
-      },
-      onScheduleFiberRoot() {},
-      onCommitFiberRoot() {},
-      onCommitFiberUnmount() {},
-    });
-  }
-
-  document.currentScript.remove();
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منشئ السير الذاتية الاحترافية - نسخة Blogger</title>
-    <meta name="description" content="أداة مجانية لإنشاء سير ذاتية احترافية محسنة لأنظمة ATS">
-    
+    <title>منشئ السير الذاتية الاحترافية</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
             line-height: 1.6;
         }
-        
-        .container { 
-            max-width: 1000px; 
-            margin: 0 auto; 
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
-        
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 40px;
             text-align: center;
         }
-        
+
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 700;
         }
-        
+
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
         }
-        
-        .content { padding: 40px; }
-        
+
+        .content {
+            padding: 40px;
+        }
+
         .progress-bar {
             background: #e9ecef;
             height: 6px;
@@ -130,14 +57,14 @@
             margin: 20px 0;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #667eea, #764ba2);
             width: 0%;
             transition: width 0.5s ease;
         }
-        
+
         .form-section {
             background: #f8f9fa;
             margin: 25px 0;
@@ -146,11 +73,11 @@
             border: 1px solid #e9ecef;
             transition: all 0.3s ease;
         }
-        
+
         .form-section:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
         .section-title {
             font-size: 1.3rem;
             font-weight: 600;
@@ -160,46 +87,50 @@
             align-items: center;
             gap: 10px;
         }
-        
-        .form-group { 
-            margin: 15px 0; 
+
+        .form-group {
+            margin: 15px 0;
         }
-        
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-        
-        label { 
-            display: block; 
-            margin-bottom: 5px; 
+
+        label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: 600;
             color: #495057;
         }
-        
+
         .input-with-ai {
             display: flex;
             gap: 5px;
             width: 100%;
         }
-        
-        input, textarea, select { 
-            width: 100%; 
-            padding: 12px 15px; 
-            border: 2px solid #e9ecef; 
-            border-radius: 8px; 
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
             font-family: inherit;
         }
-        
-        input:focus, textarea:focus, select:focus {
+
+        input:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
+
         .ai-btn {
             background: #6c757d;
             color: white;
@@ -217,149 +148,158 @@
             gap: 5px;
             transition: all 0.3s ease;
         }
-        
+
         .ai-btn.loading {
             background: #4a6cf7;
             animation: pulse 1.5s infinite;
         }
-        
+
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(74, 108, 247, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(74, 108, 247, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 108, 247, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(74, 108, 247, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 108, 247, 0);
+            }
         }
-        
+
         .ai-btn i {
             font-style: normal;
             font-size: 14px;
         }
-        
-        .btn { 
+
+        .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white; 
-            padding: 15px 30px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 16px; 
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
             font-weight: 600;
             margin: 10px 5px;
             transition: all 0.3s ease;
         }
-        
-        .btn:hover { 
+
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-        
+
         .btn-secondary {
             background: #6c757d;
         }
-        
+
         .btn-success {
             background: #28a745;
         }
-        
+
         .add-btn {
             background: #17a2b8;
             padding: 10px 20px;
             font-size: 14px;
         }
-        
-        .experience-item, .education-item {
+
+        .experience-item,
+        .education-item {
             background: white;
             padding: 20px;
             margin: 15px 0;
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
-        
+
         .remove-btn {
             background: #dc3545;
             padding: 5px 10px;
             font-size: 12px;
             float: left;
         }
-        
-        .preview { 
-            display: none; 
-            background: white; 
-            padding: 40px; 
-            border-radius: 10px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+        .preview {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-top: 30px;
         }
-        
-        .cv-header { 
-            text-align: center; 
+
+        .cv-header {
+            text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 3px solid #667eea;
         }
-        
-        .cv-header h2 { 
-            font-size: 2rem; 
+
+        .cv-header h2 {
+            font-size: 2rem;
             color: #495057;
             margin-bottom: 5px;
         }
-        
-        .cv-header .job-title { 
-            font-size: 1.2rem; 
+
+        .cv-header .job-title {
+            font-size: 1.2rem;
             color: #667eea;
             font-weight: 600;
         }
-        
-        .cv-contact { 
-            display: flex; 
-            justify-content: center; 
+
+        .cv-contact {
+            display: flex;
+            justify-content: center;
             gap: 20px;
             margin-top: 15px;
             flex-wrap: wrap;
         }
-        
-        .cv-section { 
-            margin: 25px 0; 
+
+        .cv-section {
+            margin: 25px 0;
         }
-        
-        .cv-section h3 { 
-            font-size: 1.3rem; 
+
+        .cv-section h3 {
+            font-size: 1.3rem;
             color: #667eea;
             border-bottom: 2px solid #667eea;
             padding-bottom: 5px;
             margin-bottom: 15px;
         }
-        
+
         .quality-indicators {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        
+
         .quality-item {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
             text-align: center;
         }
-        
+
         .quality-score {
             font-size: 1.5rem;
             font-weight: 700;
             color: #667eea;
         }
-        
+
         .quality-label {
             font-size: 0.9rem;
             color: #6c757d;
             margin-top: 5px;
         }
-        
+
         .profile-photo-section {
             text-align: center;
             margin-bottom: 25px;
         }
-        
+
         .profile-photo-container {
             position: relative;
             width: 150px;
@@ -370,46 +310,76 @@
             border: 3px solid #667eea;
             background: #f8f9fa;
         }
-        
+
         .profile-photo {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .photo-actions {
             display: flex;
             gap: 10px;
             margin-top: 15px;
             justify-content: center;
         }
-        
+
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .content { padding: 20px; }
-            .header { padding: 30px 20px; }
-            .header h1 { font-size: 2rem; }
-            .form-row { grid-template-columns: 1fr; }
-            .cv-contact { flex-direction: column; align-items: center; }
+            body {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cv-contact {
+                flex-direction: column;
+                align-items: center;
+            }
         }
-        
-        .hidden { display: none; }
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <!-- رأس التطبيق -->
         <div class="header">
             <h1>منشئ السير الذاتية الاحترافية</h1>
             <p>أداة مجانية لإنشاء سير ذاتية محسنة لأنظمة ATS ومحركات البحث</p>
         </div>
-        
+
         <!-- محتوى التطبيق -->
         <div class="content">
             <!-- شريط التقدم -->
@@ -419,7 +389,7 @@
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
-            
+
             <!-- مؤشرات الجودة -->
             <div class="quality-indicators">
                 <div class="quality-item">
@@ -435,12 +405,14 @@
                     <div class="quality-label">الجودة العامة</div>
                 </div>
             </div>
-            
+
             <!-- صورة شخصية -->
             <div class="profile-photo-section">
                 <h3>الصورة الشخصية</h3>
                 <div class="profile-photo-container">
-                    <img id="profilePhoto" class="profile-photo" src="image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E" alt="صورة شخصية">
+                    <img id="profilePhoto" class="profile-photo"
+                        src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='24' fill='%236c757d' text-anchor='middle'%3Eصورة شخصية%3C/text%3E%3C/svg%3E"
+                        alt="صورة شخصية">
                 </div>
                 <div class="photo-actions">
                     <input type="file" id="photoUpload" accept="image/*" style="display: none;">
@@ -448,14 +420,13 @@
                     <button class="btn btn-secondary" onclick="generateProfilePhoto()">🤖 توليد صورة AI</button>
                 </div>
             </div>
-            
+
             <!-- النماذج -->
             <form id="cvForm">
                 <!-- البيانات الشخصية -->
                 <div class="form-section">
                     <div class="section-title">
-                        <span>👤</span>
-                        البيانات الشخصية
+                        <span>👤</span> البيانات الشخصية
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -484,16 +455,15 @@
                         </div>
                         <div class="form-group">
                             <label for="linkedin">LinkedIn</label>
-                            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/ahmed-mohammed ">
+                            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/ahmed-mohammed">
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- المسمى الوظيفي والملخص -->
                 <div class="form-section">
                     <div class="section-title">
-                        <span>🎯</span>
-                        المسمى الوظيفي والملخص المهني
+                        <span>🎯</span> المسمى الوظيفي والملخص المهني
                     </div>
                     <div class="form-group">
                         <label for="jobTitle">المسمى الوظيفي المطلوب *</label>
@@ -502,18 +472,19 @@
                     <div class="form-group">
                         <label for="summary">الملخص المهني *</label>
                         <div class="input-with-ai">
-                            <textarea id="summary" rows="4" required placeholder="اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز خبرتك وإنجازاتك الرئيسية..."></textarea>
-                            <!-- توليد ملخص مهني باستخدام الذكاء الاصطناعي مع سياق الخبرة والتعليم -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('summary')"><i>AI</i> توليد</button>
+                            <textarea id="summary" rows="4" required
+                                placeholder="اكتب ملخصاً مهنياً مؤثراً في 2-3 أسطر يبرز خبرتك وإنجازاتك الرئيسية..."></textarea>
+                            <!-- زر التوليد المعدل -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('summary')"><i>AI</i>
+                                توليد</button>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- الخبرة العملية -->
                 <div class="form-section">
                     <div class="section-title">
-                        <span>💼</span>
-                        الخبرة العملية
+                        <span>💼</span> الخبرة العملية
                     </div>
                     <div id="experienceContainer">
                         <div class="experience-item">
@@ -540,21 +511,23 @@
                             <div class="form-group">
                                 <label>الإنجازات والمسؤوليات</label>
                                 <div class="input-with-ai">
-                                    <textarea name="expDescription" rows="3" placeholder="• طوّرت 3 تطبيقات ويب خدمت أكثر من 10,000 مستخدم&#10;• حسّنت الأداء بنسبة 40% من خلال تحسين الكود&#10;• قدت فريق من 4 مطورين في مشروع إعادة التصميم"></textarea>
-                                    <!-- توليد إنجازات ومسؤوليات -->
-                                    <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')"><i>AI</i> توليد</button>
+                                    <textarea name="expDescription" rows="3"
+                                        placeholder="• طوّرت 3 تطبيقات ويب خدمت أكثر من 10,000 مستخدم&#10;• حسّنت الأداء بنسبة 40% من خلال تحسين الكود&#10;• قدت فريق من 4 مطورين في مشروع إعادة التصميم"></textarea>
+                                    <!-- زر التوليد المعدل -->
+                                    <button type="button" class="ai-btn"
+                                        onclick="generateTextForField(this, 'experience-description')"><i>AI</i>
+                                        توليد</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <button type="button" class="btn add-btn" onclick="addExperience()">+ إضافة خبرة أخرى</button>
                 </div>
-                
+
                 <!-- التعليم -->
                 <div class="form-section">
                     <div class="section-title">
-                        <span>🎓</span>
-                        التعليم والمؤهلات
+                        <span>🎓</span> التعليم والمؤهلات
                     </div>
                     <div id="educationContainer">
                         <div class="education-item">
@@ -592,33 +565,36 @@
                     </div>
                     <button type="button" class="btn add-btn" onclick="addEducation()">+ إضافة مؤهل آخر</button>
                 </div>
-                
+
                 <!-- المهارات -->
                 <div class="form-section">
                     <div class="section-title">
-                        <span>⚡</span>
-                        المهارات التقنية والمهنية
+                        <span>⚡</span> المهارات التقنية والمهنية
                     </div>
                     <div class="form-group">
                         <label>المهارات التقنية</label>
                         <div class="input-with-ai">
-                            <textarea id="technicalSkills" rows="3" placeholder="JavaScript, React, Node.js, Python, SQL, Git, Docker"></textarea>
-                            <!-- توليد مهارات تقنية متناسبة مع المسمى الوظيفي والخبرة -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('technicalSkills')"><i>AI</i> توليد</button>
+                            <textarea id="technicalSkills" rows="3"
+                                placeholder="JavaScript, React, Node.js, Python, SQL, Git, Docker"></textarea>
+                            <!-- زر التوليد المعدل -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('technicalSkills')"><i>AI</i>
+                                توليد</button>
                         </div>
                         <small style="color: #6c757d;">افصل بين المهارات بفاصلة</small>
                     </div>
                     <div class="form-group">
                         <label>المهارات المهنية</label>
                         <div class="input-with-ai">
-                            <textarea id="softSkills" rows="2" placeholder="إدارة الفرق, التواصل الفعال, حل المشكلات, العمل تحت الضغط"></textarea>
-                            <!-- توليد مهارات مهنية متناسبة مع المسمى الوظيفي والخبرة -->
-                            <button type="button" class="ai-btn" onclick="generateTextForField('softSkills')"><i>AI</i> توليد</button>
+                            <textarea id="softSkills" rows="2"
+                                placeholder="إدارة الفرق, التواصل الفعال, حل المشكلات, العمل تحت الضغط"></textarea>
+                            <!-- زر التوليد المعدل -->
+                            <button type="button" class="ai-btn" onclick="generateTextForField('softSkills')"><i>AI</i>
+                                توليد</button>
                         </div>
                     </div>
                 </div>
             </form>
-            
+
             <!-- أزرار التحكم -->
             <div style="text-align: center; margin: 30px 0;">
                 <button class="btn" onclick="generateCV()">🔄 إنشاء السيرة الذاتية</button>
@@ -626,7 +602,7 @@
                 <button class="btn btn-secondary" onclick="saveData()">💾 حفظ المسودة</button>
                 <button class="btn btn-secondary" onclick="loadData()">📂 استعادة المسودة</button>
             </div>
-            
+
             <!-- معاينة السيرة الذاتية -->
             <div id="cvPreview" class="preview">
                 <div id="cvContent">
@@ -635,68 +611,68 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // متغيرات عامة
         let experienceCount = 1;
         let educationCount = 1;
-        
+
         // تحديث مؤشرات التقدم
         function updateProgress() {
             const form = document.getElementById('cvForm');
             const inputs = form.querySelectorAll('input[required], textarea[required]');
             let filledInputs = 0;
-            
+
             inputs.forEach(input => {
                 if (input.value.trim() !== '') {
                     filledInputs++;
                 }
             });
-            
+
             const progress = Math.round((filledInputs / inputs.length) * 100);
             document.getElementById('progressText').textContent = progress + '%';
             document.getElementById('progressFill').style.width = progress + '%';
-            
+
             // تحديث مؤشرات الجودة
             updateQualityScores(progress);
         }
-        
+
         // تحديث مؤشرات الجودة
         function updateQualityScores(baseProgress) {
             const seoScore = Math.min(baseProgress + Math.random() * 10, 100);
             const atsScore = Math.min(baseProgress + Math.random() * 15, 100);
             const qualityScore = Math.min(baseProgress + Math.random() * 5, 100);
-            
+
             document.getElementById('seoScore').textContent = Math.round(seoScore) + '%';
             document.getElementById('atsScore').textContent = Math.round(atsScore) + '%';
             document.getElementById('qualityScore').textContent = Math.round(qualityScore) + '%';
         }
-        
+
         // توليد نص تلقائي باستخدام الذكاء الاصطناعي
         async function generateTextForField(element, fieldType) {
-            let field, actualFieldType;
-            
-            // تحديد الحقل المطلوب
+            let field, actualFieldType, button;
+
+            // تحديد الحقل المطلوب والزر
             if (typeof element === 'string') {
-                // الحقول الثابتة
+                // الحقول الثابتة (الملخص والمهارات)
                 field = document.getElementById(element);
                 actualFieldType = element;
+                button = document.querySelector(`button[onclick="generateTextForField('${element}')"]`);
             } else {
                 // الحقول الديناميكية (الخبرة والتعليم)
-                field = element.parentElement.querySelector('input, textarea, select');
+                field = element.parentElement.querySelector('textarea');
                 actualFieldType = fieldType;
+                button = element;
             }
-            
+
             if (!field) return;
-            
+
             // إظهار مؤشر التحميل
-            const originalText = element.textContent;
-            const originalBackground = element.style.background;
-            element.textContent = "جاري التوليد...";
-            element.style.background = "#4a6cf7";
-            element.classList.add('loading');
-            element.disabled = true;
-            
+            const originalText = button.innerHTML;
+            button.innerHTML = "<i>جاري التوليد...</i>";
+            button.classList.add('loading');
+            button.disabled = true;
+
             try {
                 // الحصول على المطالبة بناءً على النوع الفعلي
                 const prompt = getFieldPrompt(actualFieldType);
@@ -706,126 +682,117 @@
                 
                 // تعديل المطالبة بناءً على السياق
                 const fullPrompt = context ? `${context}\n\n${prompt}` : prompt;
-                
-                // استخدام Pollinations.ai API لتوليد النصوص
-                const API_TOKEN = 'demo';
+
+                // استخدام API لتوليد النصوص (مثال باستخدام Pollinations.ai)
+                const API_TOKEN = 'twuw5P7YvER0qpSD';
                 const url = `https://text.pollinations.ai/openai?token=${API_TOKEN}`;
-                
-                const payload = { 
-                    messages: [{ 
-                        role: "user", 
-                        content: fullPrompt 
-                    }],
+                const payload = {
+                    messages: [{ role: "user", content: fullPrompt }],
                     max_tokens: 200,
                     temperature: 0.7
                 };
-                
+
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`فشل في الاتصال بخدمة الذكاء الاصطناعي: ${response.status} - ${await response.text()}`);
                 }
-                
+
                 const data = await response.json();
                 
                 if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
                     throw new Error("استجابة غير متوقعة من خدمة الذكاء الاصطناعي");
                 }
-                
+
                 let generatedText = data.choices[0].message.content.trim();
-                
+
                 // معالجة خاصة للحقول المختلفة
                 if (actualFieldType === 'experience-description' || actualFieldType === 'summary') {
                     generatedText = formatProfessionalText(generatedText, actualFieldType);
                 }
-                
+
                 // ملء الحقل بالنص المولد
                 field.value = generatedText;
-                
+
                 // تحديث تقدم النموذج
                 updateProgress();
-                
+
             } catch (error) {
                 console.error('Error generating text:', error);
                 alert('حدث خطأ أثناء توليد النص: ' + error.message);
             } finally {
                 // إعادة النص الأصلي للزر
-                setTimeout(() => {
-                    element.textContent = originalText;
-                    element.style.background = originalBackground;
-                    element.classList.remove('loading');
-                    element.disabled = false;
-                }, 300);
+                button.innerHTML = originalText;
+                button.classList.remove('loading');
+                button.disabled = false;
             }
         }
-        
+
         // تجميع السياق من الحقول الأخرى لتحسين التوليد
         function gatherContextForField(field, fieldType) {
             const context = [];
-            
+
             // جمع البيانات الأساسية
             const firstName = document.getElementById('firstName')?.value;
             const lastName = document.getElementById('lastName')?.value;
             const jobTitle = document.getElementById('jobTitle')?.value;
-            
+
             if (firstName && lastName) {
                 context.push(`الاسم: ${firstName} ${lastName}`);
             }
-            
+
             if (jobTitle) {
                 context.push(`المسمى الوظيفي المطلوب: ${jobTitle}`);
             }
-            
+
             // جمع الخبرات
             const experiences = [];
             document.querySelectorAll('.experience-item').forEach(item => {
                 const title = item.querySelector('input[name="expTitle"]')?.value;
                 const company = item.querySelector('input[name="expCompany"]')?.value;
                 const description = item.querySelector('textarea[name="expDescription"]')?.value;
-                
+
                 if (title || company || description) {
                     experiences.push(`- ${title ? title + ' في ' : ''}${company || ''}${description ? ': ' + description.substring(0, 100) + '...' : ''}`);
                 }
             });
-            
+
             if (experiences.length > 0) {
                 context.push(`الخبرات العملية: ${experiences.join('\n')}`);
             }
-            
+
             // جمع التعليم
             const educations = [];
             document.querySelectorAll('.education-item').forEach(item => {
                 const degree = item.querySelector('select[name="eduDegree"]')?.value;
                 const field = item.querySelector('input[name="eduField"]')?.value;
                 const institution = item.querySelector('input[name="eduInstitution"]')?.value;
-                
+
                 if (degree || field || institution) {
                     educations.push(`- ${degree || ''} في ${field || ''} من ${institution || ''}`);
                 }
             });
-            
+
             if (educations.length > 0) {
                 context.push(`المؤهلات العلمية: ${educations.join('\n')}`);
             }
-            
+
             // جمع المهارات
             const technicalSkills = document.getElementById('technicalSkills')?.value;
             const softSkills = document.getElementById('softSkills')?.value;
-            
+
             if (technicalSkills) {
                 context.push(`المهارات التقنية: ${technicalSkills}`);
             }
-            
+
             if (softSkills) {
                 context.push(`المهارات المهنية: ${softSkills}`);
             }
-            
+
             // إضافة سياق خاص حسب نوع الحقل
             if (fieldType === 'summary') {
                 context.push('يرجى توليد ملخص مهني احترافي وجذاب في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس');
@@ -834,46 +801,47 @@
             } else if (fieldType === 'technicalSkills' || fieldType === 'softSkills') {
                 context.push('يرجى توليد مهارات مناسبة للمسمى الوظيفي المطلوب مع التركيز على المهارات الأكثر طلباً في السوق مع مراعاة الخبرة العملية والتعليم');
             }
-            
+
             return context.length > 0 ? context.join('\n') : '';
         }
-        
+
         // تنسيق النص المهني بشكل مناسب
         function formatProfessionalText(text, fieldType) {
             // إزالة العبارات غير الاحترافية
             text = text.replace(/مرحبا|مرحباً|مرحبا بكم|السلام عليكم|المهندس|السيدة|الدكتور|المهندسة/g, '');
-            
+
             // معالجة خاصة للملخص المهني
             if (fieldType === 'summary') {
                 // التأكد من أن النص يبدأ بجملة قوية
                 if (!/^(خبير|محترف|مختص|أمتلك|لدي|أعمل|أجيد|أتمتع|متخصص)/i.test(text)) {
                     text = "أمتلك " + text;
                 }
-                
+
                 // إزالة التكرارات
                 text = text.replace(/(خبرة واسعة في|خبرة كبيرة في)/gi, "خبرة في");
-                
+
                 // التأكد من أن النص مختصر (2-3 أسطر)
                 const lines = text.split('\n').filter(line => line.trim().length > 0);
                 if (lines.length > 3) {
                     text = lines.slice(0, 3).join(' ');
                 }
-                
+
                 // إضافة نقاط للإنجازات إذا لم تكن موجودة
                 if (!text.includes('•') && (text.includes('و ') || text.includes(','))) {
                     const sentences = text.split(/[،,]\s+/);
                     text = sentences.map(s => `• ${s.trim()}`).join('\n');
                 }
-                
+
                 // جعل النص أكثر تسويقياً وجاذبية
                 text = text.replace(/(مطور ويب|مطور تطبيقات|مصمم واجهات)/gi, "خبير $1");
                 text = text.replace(/(تطوير|تصميم|تحليل)/gi, "خبير في $1");
                 text = text.replace(/(أعمل|أقوم)/gi, "أتميز ب");
                 text = text.replace(/(جيد|ممتاز)/gi, "متميز");
-                
+
                 // إزالة العبارات العامة
                 text = text.replace(/(العمل الجاد|الالتزام|الدقة|الجدية)/gi, '');
-            } 
+            }
+
             // معالجة خاصة لوصف الخبرة
             else if (fieldType === 'experience-description') {
                 // التأكد من وجود نقاط
@@ -881,77 +849,77 @@
                     const sentences = text.split(/[،.]\s+/).filter(s => s.trim().length > 0);
                     text = sentences.map(s => `• ${s.trim()}`).join('\n');
                 }
-                
+
                 // إضافة أرقام ونتائج قابلة للقياس
                 if (!/\d+%/g.test(text) && !/\d+ مشروع/g.test(text) && !/\d+ مستخدم/g.test(text)) {
                     text = text.replace(/(طورت|صممت|قمت)/gi, "$1 وحسّنت الأداء بنسبة 40%");
                     text = text.replace(/(عملت|شاركت)/gi, "$1 في تطوير 5 مشاريع ناجحة");
                 }
-                
+
                 // تحسين اللغة لتكون أكثر احترافية
                 text = text.replace(/(ساعدت|ساعد)/gi, "ساهمت في");
                 text = text.replace(/(تعلمت|درست)/gi, "اكتسبت خبرة في");
                 text = text.replace(/(قمت ب)/gi, "");
             }
-            
+
             // إزالة الأسطر الفارغة
             text = text.replace(/\n{2,}/g, '\n');
-            
+
             return text.trim();
         }
-        
-        // توليد صورة شخصية باستخدام الذكاء الاصطناعي
-        async function generateProfilePhoto() {
-            const profilePhoto = document.getElementById('profilePhoto');
-            const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
-            
-            // إظهار مؤشر التحميل
-            profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
-            
-            try {
-                // استخدام خدمة توليد الصور
-                const prompt = `صورة احترافية لشخص في مجال ${jobTitle}، خلفية مكتب حديثة، مظهر مهني، إضاءة ممتازة`;
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=150&height=150&nologo=true`;
-                
-                // تحميل الصورة
-                const img = new Image();
-                img.crossOrigin = "anonymous";
-                img.src = imageUrl;
-                
-                img.onload = function() {
-                    profilePhoto.src = imageUrl;
-                };
-                
-                img.onerror = function() {
-                    // في حالة الخطأ، استخدم صورة افتراضية
-                    profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
-                    alert('فشل في توليد الصورة. يرجى المحاولة مرة أخرى.');
-                };
-                
-            } catch (error) {
-                console.error('Error generating profile photo:', error);
-                profilePhoto.src = "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
-                alert('حدث خطأ أثناء توليد الصورة: ' + error.message);
-            }
-        }
-        
+
         // تحديد مطالبة التوليد بناءً على نوع الحقل
         function getFieldPrompt(fieldType) {
             // استخدام دوال ديناميكية للحصول على القيم الحالية
             const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
             const firstName = document.getElementById('firstName')?.value || 'أحمد';
             const lastName = document.getElementById('lastName')?.value || 'محمد';
-            
+
             const prompts = {
                 'summary': `بناءً على معلومات السيرة الذاتية، اكتب ملخصاً مهنياً جذاباً في 2-3 أسطر يبرز الهوية الوظيفية والإنجازات الرئيسية مع التركيز على النتائج القابلة للقياس والقيمة المضافة التي تقدمها. يجب أن يكون النص احترافياً ومقنعاً ويبرز نقاط القوة الفريدة. استخدم هذه المعلومات: الاسم: ${firstName} ${lastName}، المسمى الوظيفي: ${jobTitle}`,
                 'experience-description': `اكتب وصفاً احترافياً للإنجازات والمسؤوليات في خبرة عملية في مجال ${jobTitle}، مع التركيز على النتائج القابلة للقياس والأرقام الملموسة. استخدم لغة تسويقية واحترافية تبرز القيمة المضافة التي قدمتها.`,
                 'technicalSkills': `بناءً على معلومات السيرة الذاتية، اكتب قائمة بالمهارات التقنية المطلوبة لوظيفة ${jobTitle}، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم. استخدم هذه المعلومات: الاسم: ${firstName} ${lastName}, المسمى الوظيفي: ${jobTitle}`,
                 'softSkills': `بناءً على معلومات السيرة الذاتية، اكتب قائمة بالمهارات المهنية المطلوبة لوظيفة ${jobTitle}، مع مراعاة المهارات الأكثر طلباً في السوق حسب المسمى الوظيفي، مفصولة بفواصل. ركز على المهارات الأكثر صلة بالوظيفة المطلوبة مع مراعاة الخبرة العملية والتعليم. استخدم هذه المعلومات: الاسم: ${firstName} ${lastName}, المسمى الوظيفي: ${jobTitle}`
             };
-            
+
             return prompts[fieldType] || 'اكتب نصاً مناسباً لهذا الحقل في سيرة ذاتية احترافية';
         }
-        
+
+        // توليد صورة شخصية باستخدام الذكاء الاصطناعي
+        async function generateProfilePhoto() {
+            const profilePhoto = document.getElementById('profilePhoto');
+            const jobTitle = document.getElementById('jobTitle')?.value || 'مطور ويب';
+
+            // إظهار مؤشر التحميل
+            profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eجاري التوليد...%3C/text%3E%3C/svg%3E";
+
+            try {
+                // استخدام خدمة توليد الصور
+                const prompt = `صورة احترافية لشخص في مجال ${jobTitle}، خلفية مكتب حديثة، مظهر مهني، إضاءة ممتازة`;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=150&height=150&nologo=true`;
+
+                // تحميل الصورة
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.src = imageUrl;
+
+                img.onload = function () {
+                    profilePhoto.src = imageUrl;
+                };
+
+                img.onerror = function () {
+                    // في حالة الخطأ، استخدم صورة افتراضية
+                    profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eلم تُولد الصورة%3C/text%3E%3C/svg%3E";
+                    alert('فشل في توليد الصورة. يرجى المحاولة مرة أخرى.');
+                };
+
+            } catch (error) {
+                console.error('Error generating profile photo:', error);
+                profilePhoto.src = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23e9ecef'/%3E%3Ctext x='75' y='85' font-family='Arial' font-size='14' fill='%236c757d' text-anchor='middle'%3Eفشل في التوليد%3C/text%3E%3C/svg%3E";
+                alert('حدث خطأ أثناء توليد الصورة: ' + error.message);
+            }
+        }
+
         // إضافة خبرة عملية جديدة
         function addExperience() {
             experienceCount++;
@@ -984,14 +952,13 @@
                     <label>الإنجازات والمسؤوليات</label>
                     <div class="input-with-ai">
                         <textarea name="expDescription" rows="3" placeholder="اكتب إنجازاتك ومسؤولياتك الرئيسية..."></textarea>
-                        <!-- توليد إنجازات ومسؤوليات -->
                         <button type="button" class="ai-btn" onclick="generateTextForField(this, 'experience-description')"><i>AI</i> توليد</button>
                     </div>
                 </div>
             `;
             container.appendChild(newExperience);
         }
-        
+
         // إضافة مؤهل تعليمي جديد
         function addEducation() {
             educationCount++;
@@ -1033,7 +1000,7 @@
             `;
             container.appendChild(newEducation);
         }
-        
+
         // إنشاء السيرة الذاتية
         function generateCV() {
             const firstName = document.getElementById('firstName').value;
@@ -1046,7 +1013,7 @@
             const summary = document.getElementById('summary').value;
             const technicalSkills = document.getElementById('technicalSkills').value;
             const softSkills = document.getElementById('softSkills').value;
-            
+
             // جمع بيانات الخبرة
             const experiences = [];
             document.querySelectorAll('.experience-item').forEach(item => {
@@ -1055,12 +1022,12 @@
                 const start = item.querySelector('input[name="expStart"]').value;
                 const end = item.querySelector('input[name="expEnd"]').value;
                 const description = item.querySelector('textarea[name="expDescription"]').value;
-                
+
                 if (title || company) {
                     experiences.push({ title, company, start, end, description });
                 }
             });
-            
+
             // جمع بيانات التعليم
             const education = [];
             document.querySelectorAll('.education-item').forEach(item => {
@@ -1069,12 +1036,12 @@
                 const institution = item.querySelector('input[name="eduInstitution"]').value;
                 const year = item.querySelector('input[name="eduYear"]').value;
                 const gpa = item.querySelector('input[name="eduGPA"]').value;
-                
+
                 if (degree || field || institution) {
                     education.push({ degree, field, institution, year, gpa });
                 }
             });
-            
+
             // إنشاء HTML للسيرة الذاتية
             let cvHTML = `
                 <div class="cv-header">
@@ -1093,7 +1060,7 @@
                     </div>
                 </div>
             `;
-            
+
             if (summary) {
                 cvHTML += `
                     <div class="cv-section">
@@ -1102,7 +1069,7 @@
                     </div>
                 `;
             }
-            
+
             if (experiences.length > 0) {
                 cvHTML += `<div class="cv-section"><h3>الخبرة العملية</h3>`;
                 experiences.forEach(exp => {
@@ -1125,7 +1092,7 @@
                 });
                 cvHTML += `</div>`;
             }
-            
+
             if (education.length > 0) {
                 cvHTML += `<div class="cv-section"><h3>التعليم</h3>`;
                 education.forEach(edu => {
@@ -1140,7 +1107,7 @@
                 });
                 cvHTML += `</div>`;
             }
-            
+
             if (technicalSkills || softSkills) {
                 cvHTML += `<div class="cv-section"><h3>المهارات</h3>`;
                 if (technicalSkills) {
@@ -1151,12 +1118,12 @@
                 }
                 cvHTML += `</div>`;
             }
-            
+
             document.getElementById('cvContent').innerHTML = cvHTML;
             document.getElementById('cvPreview').style.display = 'block';
             document.getElementById('cvPreview').scrollIntoView({ behavior: 'smooth' });
         }
-        
+
         // تصدير PDF
         function exportCV() {
             const cvContent = document.getElementById('cvContent');
@@ -1164,19 +1131,19 @@
                 alert('يرجى إنشاء السيرة الذاتية أولاً!');
                 return;
             }
-            
+
             const firstName = document.getElementById('firstName').value || 'السيرة';
             const lastName = document.getElementById('lastName').value || 'الذاتية';
             const fileName = `${firstName}-${lastName}-CV`;
-            
+
             const printWindow = window.open('', '', 'height=800,width=1000');
-            
+
             // تأكد من أن النافذة قد تم إنشاؤها
             if (!printWindow) {
                 alert('يرجى السماح بفتح النوافذ المنبثقة في متصفحك لتصدير PDF');
                 return;
             }
-            
+
             // إنشاء محتوى النافذة
             printWindow.document.write(`
                 <!DOCTYPE html>
@@ -1185,42 +1152,42 @@
                     <title>${fileName}</title>
                     <meta charset="UTF-8">
                     <style>
-                        body { 
-                            font-family: 'Segoe UI', Arial, sans-serif; 
-                            line-height: 1.6; 
+                        body {
+                            font-family: 'Segoe UI', Arial, sans-serif;
+                            line-height: 1.6;
                             color: #333;
                             max-width: 800px;
                             margin: 0 auto;
                             padding: 40px 20px;
                         }
-                        .cv-header { 
-                            text-align: center; 
+                        .cv-header {
+                            text-align: center;
                             margin-bottom: 30px;
                             padding-bottom: 20px;
                             border-bottom: 3px solid #667eea;
                         }
-                        .cv-header h2 { 
-                            font-size: 2rem; 
+                        .cv-header h2 {
+                            font-size: 2rem;
                             color: #495057;
                             margin-bottom: 5px;
                         }
-                        .job-title { 
-                            font-size: 1.2rem; 
+                        .job-title {
+                            font-size: 1.2rem;
                             color: #667eea;
                             font-weight: 600;
                         }
-                        .cv-contact { 
-                            display: flex; 
-                            justify-content: center; 
+                        .cv-contact {
+                            display: flex;
+                            justify-content: center;
                             gap: 20px;
                             margin-top: 15px;
                             flex-wrap: wrap;
                         }
-                        .cv-section { 
-                            margin: 25px 0; 
+                        .cv-section {
+                            margin: 25px 0;
                         }
-                        .cv-section h3 { 
-                            font-size: 1.3rem; 
+                        .cv-section h3 {
+                            font-size: 1.3rem;
                             color: #667eea;
                             border-bottom: 2px solid #667eea;
                             padding-bottom: 5px;
@@ -1239,19 +1206,24 @@
                             height: 100%;
                             object-fit: cover;
                         }
-                        @page { size: A4; margin: 2cm; }
+                        @page {
+                            size: A4;
+                            margin: 2cm;
+                        }
                         @media print {
-                            body { padding: 0; }
+                            body {
+                                padding: 0;
+                            }
                         }
                     </style>
                 </head>
                 <body>${cvContent.innerHTML}</body>
                 </html>
             `);
-            
+
             // تأكد من إغلاق المستند قبل الطباعة
             printWindow.document.close();
-            
+
             // إضافة تأخير إضافي لضمان تحميل جميع الموارد
             setTimeout(() => {
                 try {
@@ -1262,12 +1234,12 @@
                 }
             }, 500);
         }
-        
+
         // حفظ البيانات
         function saveData() {
             const formData = new FormData(document.getElementById('cvForm'));
             const data = Object.fromEntries(formData);
-            
+
             // إضافة البيانات الأساسية
             data.firstName = document.getElementById('firstName').value;
             data.lastName = document.getElementById('lastName').value;
@@ -1279,16 +1251,16 @@
             data.summary = document.getElementById('summary').value;
             data.technicalSkills = document.getElementById('technicalSkills').value;
             data.softSkills = document.getElementById('softSkills').value;
-            
+
             localStorage.setItem('cvBuilderData', JSON.stringify(data));
-            
+
             // حفظ الصورة الشخصية
             const profilePhoto = document.getElementById('profilePhoto').src;
             localStorage.setItem('profilePhoto', profilePhoto);
-            
+
             alert('تم حفظ المسودة بنجاح!');
         }
-        
+
         // استعادة البيانات
         function loadData() {
             const savedData = localStorage.getItem('cvBuilderData');
@@ -1296,9 +1268,9 @@
                 alert('لا توجد مسودة محفوظة!');
                 return;
             }
-            
+
             const data = JSON.parse(savedData);
-            
+
             // استعادة البيانات الأساسية
             Object.keys(data).forEach(key => {
                 const element = document.getElementById(key);
@@ -1306,47 +1278,45 @@
                     element.value = data[key];
                 }
             });
-            
+
             // استعادة الصورة الشخصية
             const savedPhoto = localStorage.getItem('profilePhoto');
             if (savedPhoto) {
                 document.getElementById('profilePhoto').src = savedPhoto;
             }
-            
+
             updateProgress();
             alert('تم استعادة المسودة بنجاح!');
         }
-        
+
         // تحديث التقدم عند كتابة البيانات
         document.addEventListener('input', updateProgress);
         document.addEventListener('change', updateProgress);
-        
+
         // تحديث أولي للتقدم
         updateProgress();
-        
+
         // إضافة تأثيرات تفاعلية
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // تحريك مؤشرات الجودة
             setTimeout(() => {
                 updateProgress();
             }, 1000);
-            
+
             // تحميل الصورة الشخصية من localStorage إذا وجدت
             const savedPhoto = localStorage.getItem('profilePhoto');
             if (savedPhoto) {
                 document.getElementById('profilePhoto').src = savedPhoto;
             }
-            
+
             // معالجة تحميل الصورة الشخصية
-            document.getElementById('photoUpload').addEventListener('change', function(e) {
+            document.getElementById('photoUpload').addEventListener('change', function (e) {
                 if (e.target.files && e.target.files[0]) {
                     const reader = new FileReader();
-                    
-                    reader.onload = function(event) {
+                    reader.onload = function (event) {
                         document.getElementById('profilePhoto').src = event.target.result;
                         localStorage.setItem('profilePhoto', event.target.result);
                     }
-                    
                     reader.readAsDataURL(e.target.files[0]);
                 }
             });
